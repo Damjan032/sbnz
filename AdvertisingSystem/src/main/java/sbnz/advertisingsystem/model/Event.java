@@ -12,7 +12,7 @@ import java.util.Date;
 @Getter
 @Setter
 public abstract class Event {
-    protected Date occuredAt;
+    protected Date occurredAt;
     protected User user;
     protected Advertisement advertisement;
 }

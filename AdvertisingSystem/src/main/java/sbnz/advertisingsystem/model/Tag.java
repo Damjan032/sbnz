@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @AllArgsConstructor
@@ -13,14 +14,13 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class SocialMediaPage {
+public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    
-    private String name;
-    private List<String> categoryKeywords;
+    @NotNull
+    private String tag;
     
     @ManyToMany(fetch = FetchType.EAGER)
-    private List<SocialMediaUser> usersWhoLikeThePage;
+    private List<Advertisement> advertisements;
 }
