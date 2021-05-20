@@ -77,6 +77,11 @@
             <artifactId>drools-compiler</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-mvel</artifactId>
+            <version>7.54.0.Final</version>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -92,6 +97,17 @@
     </dependencyManagement>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>META-INF/kmodule.xml</include>
+                    <include>META-INF/maven/pom.properties</include>
+                    <include>rules/Sample.drl</include>
+                </includes>
+                <targetPath>.</targetPath>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
