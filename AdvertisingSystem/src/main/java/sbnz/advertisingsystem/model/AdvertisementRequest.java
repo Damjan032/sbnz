@@ -22,11 +22,11 @@ public class AdvertisementRequest {
     private Advertisement advertisement;
     
     @NotNull
-    private int minAge;
+    private int minAge = 0;
     
     @NotNull
-    private int maxAge;
+    private int maxAge = 999;
     
     @NotNull
-    private String geographicLocation;
+    private String geographicLocation = "";
 }

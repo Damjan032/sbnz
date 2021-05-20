@@ -43,4 +43,12 @@ public class SocialMediaUser{
 
     @ManyToMany
     private List<Advertisement> clickedAdvertisements;
+
+    public String fullName() {
+        return user.getFirstName() + " " + user.getLastName();
+    }
+
+    public String fullLocation() {
+        return city + ", " + country;
+    }
 }

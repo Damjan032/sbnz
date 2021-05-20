@@ -11,6 +11,8 @@ import lombok.Setter;
 @Setter
 public class Candidate {
     private SocialMediaUser user;
+    private boolean isAgeGroup, isGeographyGroup;
     private boolean isTargetGroup;
     double c1, c2, c3, c4;
+    String test = "test";
 }

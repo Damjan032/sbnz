@@ -2,19 +2,36 @@ package rules;
 
 import sbnz.advertisingsystem.DroolsTest.Message;
 
-rule "Hello World"
+import sbnz.advertisingsystem.model.Candidate;
+import sbnz.advertisingsystem.model.AdvertisementRequest
+
+rule "Target Group Age"
     when
-        m : Message( status == Message.HELLO, myMessage : message )
+        $req: AdvertisementRequest($min: minAge, $max: maxAge)
+        $c : Candidate(user.age > $min, user.age < $max)
     then
-        System.out.println( myMessage );
-        m.setMessage( "Goodbye cruel world" );
-        m.setStatus( Message.GOODBYE );
-        update( m );
+        System.out.println("Candidate with name: " + $c.getUser().fullName() + " satisfies the age condition");
+        $c.setAgeGroup(true);
+        update($c);
 end
 
-rule "GoodBye"
+
+rule "Target Group Geography"
     when
-        Message( status == Message.GOODBYE, myMessage : message )
+        $req: AdvertisementRequest($query: geographicLocation)
+        $c: Candidate(user.fullLocation.contains($query))
     then
-        System.out.println( myMessage );
+        System.out.println("Candidate with name: " + $c.getUser().fullName() + " satisfies the geography condition");
+        $c.setGeographyGroup(true);
+        update($c);
+end
+
+
+rule "Target Group All Conditions Satisfied"
+    when
+        $c: Candidate(ageGroup && geographyGroup)
+    then
+        System.out.println("Candidate with name: " + $c.getUser().fullName() + " does belong to ad target group!");
+        $c.setTargetGroup(true);
+        update($c);
 end

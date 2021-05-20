@@ -5,27 +5,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
-import java.security.Key;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
-public class SocialMediaPage {
+public class Keyword {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
     @NotNull
-    private String name;
-
-    @ManyToMany
-    private List<Keyword> categoryKeywords;
-    
-    @ManyToMany(fetch = FetchType.EAGER)
-    private List<SocialMediaUser> usersWhoLikeThePage;
+    String value;
 }
