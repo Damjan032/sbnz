@@ -1,0 +1,12 @@
+package rules;
+
+import com.sbnz.ibar.model.ReadingProgress;
+
+
+rule "Read book - Set flag"
+    when
+        $rp: ReadingProgress( progress > 80 )
+    then
+        $rp.setRead(true);
+        update($i);
+end
