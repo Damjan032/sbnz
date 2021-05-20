@@ -18,8 +18,7 @@ public class AdvertisementRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     
-    @ManyToOne
-    @JoinColumn(name="advertiser_id", nullable=false)
+    @OneToOne
     private Advertisement advertisement;
     
     @NotNull

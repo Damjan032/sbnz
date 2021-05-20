@@ -35,9 +35,12 @@ public class SocialMediaUser{
     @ManyToMany(mappedBy = "usersWhoLikeThePage")
     private List<SocialMediaPage> likedSocialMediaPages;
 
-    private List<ClickEvent> clickEvents;
-
+    @ManyToMany
     private List<Advertisement> advertisementsToBeShown;
+
+    @ManyToMany
     private List<Advertisement> ignoredAdvertisements;
+
+    @ManyToMany
     private List<Advertisement> clickedAdvertisements;
 }

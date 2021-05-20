@@ -28,13 +28,11 @@ public class Advertisement {
     
     @ManyToMany(mappedBy = "advertisements")
     private List<Tag> tags;
+
     @NotNull
     private double budget;
     
     @ManyToOne
     @JoinColumn(name="advertiser_id", nullable=false)
     private Advertiser advertiser;
-    
-    @OneToMany(mappedBy="advertisement")
-    private List<AdvertisementRequest> advertisementRequests;
 }
