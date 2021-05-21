@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../adsys/adsys.iml" filepath="$PROJECT_DIR$/../adsys/adsys.iml" />
       <module fileurl="file://$PROJECT_DIR$/drools.iml" filepath="$PROJECT_DIR$/drools.iml" />
     </modules>
   </component>

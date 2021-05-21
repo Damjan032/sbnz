@@ -8,7 +8,13 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>Drools</name>
   <packaging>jar</packaging>
-
+  <dependencies>
+    <dependency>
+      <groupId>com.sbnz</groupId>
+      <artifactId>adsys</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
   <build>
     <plugins>
       <plugin>
