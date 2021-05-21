@@ -26,7 +26,7 @@ public class Advertisement {
     @NotNull
     private String targetUrl;
     
-    @ManyToMany(mappedBy = "advertisements")
+    @ManyToMany()
     private List<Tag> tags;
 
     @NotNull

@@ -33,6 +33,6 @@ public class Advertisement {
     private double budget;
     
     @ManyToOne
-    @JoinColumn(name="advertiser_id", nullable=false)
+//    @JoinColumn(name="advertiser_id", nullable=false)
     private Advertiser advertiser;
 }
