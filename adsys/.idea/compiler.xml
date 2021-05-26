@@ -8,10 +8,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="adsys" />
+        <module name="drools" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="adsys" target="1.8" />
+      <module name="drools" target="1.5" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

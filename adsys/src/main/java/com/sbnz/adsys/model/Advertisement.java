@@ -7,6 +7,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
@@ -21,12 +23,14 @@ public class Advertisement {
     
     @NotNull
     private String title;
+
     @NotNull
     private String content;
+
     @NotNull
     private String targetUrl;
     
-    @ManyToMany()
+    @ManyToMany
     private List<Tag> tags;
 
     @NotNull
@@ -38,4 +42,7 @@ public class Advertisement {
     @ManyToOne
     @JoinColumn(name="advertiser_id", nullable=false)
     private Advertiser advertiser;
+
+    @NotNull
+    private LocalDate datePublished;
 }

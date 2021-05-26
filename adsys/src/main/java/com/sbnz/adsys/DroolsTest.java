@@ -1,12 +1,11 @@
 package com.sbnz.adsys;
 
+import com.sbnz.adsys.model.*;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import com.sbnz.adsys.model.AdvertisementRequest;
-import com.sbnz.adsys.model.Candidate;
-import com.sbnz.adsys.model.SocialMediaUser;
-import com.sbnz.adsys.model.User;
+
+import java.time.LocalDate;
 
 public class DroolsTest {
     
@@ -18,7 +17,15 @@ public class DroolsTest {
             KieSession kSession = kContainer.newKieSession("ksession-rules");
             
             // go !
+            Advertisement ad = new Advertisement();
+            ad.setDatePublished(LocalDate.now());
+            Advertiser advertiser = new Advertiser();
+            advertiser.setName("Google");
+            ad.setAdvertiser(advertiser);
+
             AdvertisementRequest request = new AdvertisementRequest();
+
+            request.setAdvertisement(ad);
             request.setGeographicLocation("Serbia");
             request.setMinAge(15);
             
@@ -45,6 +52,15 @@ public class DroolsTest {
             kSession.insert(request);
             kSession.insert(candidate);
             kSession.insert(candidate2);
+//            kSession.fireAllRules();
+
+            kSession.getAgenda().getAgendaGroup("target-group").setFocus();
+            kSession.fireAllRules();
+
+            kSession.getAgenda().getAgendaGroup("elimination/qualification").setFocus();
+            kSession.fireAllRules();
+
+            kSession.getAgenda().getAgendaGroup("calculating-coefficients").setFocus();
             kSession.fireAllRules();
         } catch (Throwable t) {
             t.printStackTrace();
