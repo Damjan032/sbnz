@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.core.userdetails.UserDetails;
+//import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class User implements UserDetails {
+public class User {//implements UserDetails {
     
     private static final long serialVersionUID = 1L;
     
@@ -53,34 +53,34 @@ public class User implements UserDetails {
         this.id = id;
     }
     
-    @Override
-    public List<Authority> getAuthorities() {
-        return this.authorities;
-    }
-    
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-    
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-    
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-    
-    @Override
-    public boolean isEnabled() {
-        return this.enabled;
-    }
-    
-    @Override
-    public String getUsername() {
-        return this.email;
-    }
+//    @Override
+//    public List<Authority> getAuthorities() {
+//        return this.authorities;
+//    }
+//    
+//    @Override
+//    public boolean isAccountNonExpired() {
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean isAccountNonLocked() {
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean isCredentialsNonExpired() {
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean isEnabled() {
+//        return this.enabled;
+//    }
+//
+//    @Override
+//    public String getUsername() {
+//        return this.email;
+//    }
     
 }
