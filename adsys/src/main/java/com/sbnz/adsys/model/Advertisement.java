@@ -32,6 +32,9 @@ public class Advertisement {
     @NotNull
     private double budget;
     
+    @OneToMany(mappedBy="user")
+    private List<Event> events;
+    
     @ManyToOne
     @JoinColumn(name="advertiser_id", nullable=false)
     private Advertiser advertiser;

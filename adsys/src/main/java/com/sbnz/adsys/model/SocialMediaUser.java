@@ -22,7 +22,7 @@ public class SocialMediaUser{
     @NotNull
     private int age;
     
-    @NotNull
+    @OneToOne
     private User user;
     
     @NotNull

@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@Entity
 public class User implements UserDetails {
     
     private static final long serialVersionUID = 1L;
@@ -32,6 +33,9 @@ public class User implements UserDetails {
     
     @Column(nullable = false)
     private String lastName;
+    
+    @OneToMany(mappedBy="user")
+    private List<Event> events;
     
     private Long lastPasswordResetDate;
     
