@@ -18,9 +18,6 @@ public class AdvertisementRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     
-    @OneToOne
-    private Advertisement advertisement;
-    
     @NotNull
     private int minAge = 0;
     
@@ -29,4 +26,7 @@ public class AdvertisementRequest {
     
     @NotNull
     private String geographicLocation = "";
+
+    @OneToOne
+    private Advertisement advertisement;
 }

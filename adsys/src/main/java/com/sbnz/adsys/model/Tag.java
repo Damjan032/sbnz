@@ -21,7 +21,4 @@ public class Tag {
 
     @NotNull
     private String tag;
-    
-//    @ManyToMany(fetch = FetchType.EAGER)
-//    private List<Advertisement> advertisements;
 }

@@ -52,15 +52,8 @@ public class DroolsTest {
             kSession.insert(request);
             kSession.insert(candidate);
             kSession.insert(candidate2);
-//            kSession.fireAllRules();
-
-            kSession.getAgenda().getAgendaGroup("target-group").setFocus();
             kSession.fireAllRules();
 
-            kSession.getAgenda().getAgendaGroup("elimination/qualification").setFocus();
-            kSession.fireAllRules();
-
-            kSession.getAgenda().getAgendaGroup("calculating-coefficients").setFocus();
             kSession.fireAllRules();
         } catch (Throwable t) {
             t.printStackTrace();

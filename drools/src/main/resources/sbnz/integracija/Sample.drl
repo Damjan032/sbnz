@@ -8,99 +8,8 @@ import com.sbnz.adsys.model.AdvertisementRequest;
 import com.sbnz.adsys.model.Advertisement
 
 
-//rule "Target Group Age" salience 100
-//lock-on-active
-//    when
-//        $req: AdvertisementRequest($min: minAge, $max: maxAge)
-//        $c : Candidate(user.age > $min, user.age < $max)
-//    then
-//        System.out.println("Candidate with name: " + $c.getUser().fullName() + " satisfies the age condition");
-//        modify ($c) {setAgeGroup(true)}
-//end
-//
-//
-//rule "Target Group Geography" salience 100
-//lock-on-active
-//    when
-//        $req: AdvertisementRequest($query: geographicLocation)
-//        $c: Candidate(user.fullLocation.contains($query))
-//    then
-//        System.out.println("Candidate with name: " + $c.getUser().fullName() + " satisfies the geography condition");
-//        modify ($c) {setGeographyGroup(true)}
-//end
-//
-//
-//rule "Is Target Group" salience 90
-//lock-on-active
-//    when
-//        $c: Candidate(ageGroup && geographyGroup)
-//    then
-//        System.out.println("Candidate with name: " + $c.getUser().fullName() + " does belong to ad target group!");
-//        modify ($c) {setTargetGroup(true)}
-//end
-//
-//
-//rule "Is not Target Group" salience 90
-//lock-on-active
-//    when
-//        $c: Candidate(!(ageGroup && geographyGroup))
-//    then
-//        System.out.println("Candidate with name: " + $c.getUser().fullName() + " does NOT belong to ad target group!");
-//end
-
-
-//rule "5+ ads ignored this month by the same company" salience 80
-//lock-on-active
-//    when
-//        $req: AdvertisementRequest($currentAd: advertisement, $currentAdvertiser: advertisement.advertiser)
-//        $c: Candidate(targetGroup)
-//        Number(intValue >= 0) from accumulate(
-//            Advertisement(
-//                advertiser.name == $currentAdvertiser.name &&
-//                $currentAd.getDatePublished().isAfter(LocalDate.now().minusMonths(1))
-//            ) from $c.user.ignoredAdvertisements,
-//            count()
-//        )
-//    then
-//        System.out.println("Candidate: " + $c.getUser().fullName() + " has ignored 5+ ads by "
-//        + $currentAdvertiser.getName() + " and he's eliminated from the candidate pool!");
-//        $c.setDisqualified(true);
-//        update($c);
-//end
-
-
-//rule "5+ ads clicked on this month by the same company" salience 80
-//lock-on-active
-//    when
-//        $req: AdvertisementRequest($currentAd: advertisement, $currentAdvertiser: advertisement.advertiser)
-//        $c: Candidate(targetGroup)
-//        Number(intValue >= 0) from accumulate(
-//            Advertisement(
-//                advertiser.name == $currentAdvertiser.name &&
-//                $currentAd.getDatePublished().isAfter(LocalDate.now().minusMonths(1))
-//            ) from $c.user.ignoredAdvertisements,
-//            count()
-//        )
-//    then
-//        System.out.println("Candidate: " + $c.getUser().fullName() + " has clicked on 5+ ads by "
-//        + $currentAdvertiser.getName() + " and he will be automatically qualifed!");
-//        modify ($c) {setAutomaticallyQualified(true)}
-//end
-//
-//
-//rule "Is In Pool" salience 70
-//    when
-//        $c: Candidate(targetGroup && !disqualified && !automaticallyQualified)
-//    then
-//        System.out.println("Candidate with name: " + $c.getUser().fullName() + " still in the pool");
-//end
-
-
-// --------------------------------------- KRAJ --------------------------------------- //
-
-
-rule "Target Group Age" salience 1
-agenda-group "target-group"
+rule "Target Group Age" salience 10
+lock-on-active
     when
         $req: AdvertisementRequest($min: minAge, $max: maxAge)
         $c : Candidate(user.age > $min, user.age < $max)
@@ -110,8 +19,8 @@ agenda-group "target-group"
 end
 
 
-rule "Target Group Geography" salience 1
-agenda-group "target-group"
+rule "Target Group Geography" salience 10
+lock-on-active
     when
         $req: AdvertisementRequest($query: geographicLocation)
         $c: Candidate(user.fullLocation.contains($query))
@@ -121,18 +30,16 @@ agenda-group "target-group"
 end
 
 
-rule "Is Target Group"
-agenda-group "target-group"
+rule "Is Target Group" salience 9
     when
-        $c: Candidate(ageGroup && geographyGroup)
+        $c: Candidate(ageGroup && geographyGroup) @Watch(ageGroup, geographyGroup)
     then
         System.out.println("Candidate with name: " + $c.getUser().fullName() + " does belong to ad target group!");
         modify ($c) {setTargetGroup(true)}
 end
 
 
-rule "Is not Target Group"
-agenda-group "target-group"
+rule "Is not Target Group" salience 9
     when
         $c: Candidate(!(ageGroup && geographyGroup))
     then
@@ -140,12 +47,10 @@ agenda-group "target-group"
 end
 
 
-rule "5+ ads ignored this month by the same company" salience 1
-agenda-group "elimination/qualification"
-no-loop
+rule "5+ ads ignored this month by the same company" salience 8
     when
         $req: AdvertisementRequest($currentAd: advertisement, $currentAdvertiser: advertisement.advertiser)
-        $c: Candidate(targetGroup)
+        $c: Candidate(targetGroup)  @Watch(targetGroup)
         Number(intValue >= 5) from accumulate(
             Advertisement(
                 advertiser.name == $currentAdvertiser.name &&
@@ -156,14 +61,11 @@ no-loop
     then
         System.out.println("Candidate: " + $c.getUser().fullName() + " has ignored 5+ ads by "
         + $currentAdvertiser.getName() + " and he's eliminated from the candidate pool!");
-        $c.setDisqualified(true);
-        update($c);
+        modify ($c){setDisqualified(true)}
 end
 
 
-rule "5+ ads clicked on this month by the same company"
-agenda-group "elimination/qualification"
-no-loop
+rule "5+ ads clicked on this month by the same company" salience 7
     when
         $req: AdvertisementRequest($currentAd: advertisement, $currentAdvertiser: advertisement.advertiser)
         $c: Candidate(targetGroup && !disqualified)
@@ -181,8 +83,7 @@ no-loop
 end
 
 
-rule "Is In Pool" salience 1
-agenda-group "calculating-coefficients"
+rule "Is In Pool" salience 6
     when
         $c: Candidate(targetGroup && !disqualified && !automaticallyQualified)
     then

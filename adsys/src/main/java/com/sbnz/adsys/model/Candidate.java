@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.kie.api.definition.type.PropertyReactive;
 
 import javax.persistence.*;
 
@@ -11,8 +12,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Setter
+//@PropertyReactive
 public class Candidate {
-
     private SocialMediaUser user;
 
     private boolean isAgeGroup, isGeographyGroup;
@@ -27,6 +28,8 @@ public class Candidate {
     public double getFinalScore() {
         if (isAutomaticallyQualified) {
             return Double.POSITIVE_INFINITY;
+        } else if (isDisqualified && !isTargetGroup){
+            return Double.NEGATIVE_INFINITY;
         }
 
         return clickedAdsCoefficient + 2 * ignoredAdsCoefficient + likedPagesCoefficient;
