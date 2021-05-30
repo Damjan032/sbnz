@@ -12,7 +12,6 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Setter
-//@PropertyReactive
 public class Candidate {
     private SocialMediaUser user;
 
@@ -21,17 +20,19 @@ public class Candidate {
     private boolean isDisqualified;
     private boolean isAutomaticallyQualified;
 
+    private double adsByCompanyCoefficient = 0.5;
     private double clickedAdsCoefficient = 0;
     private double ignoredAdsCoefficient = 0;
     private double likedPagesCoefficient = 0;
+    private double herdCoefficient = 0;
 
-    public double getFinalScore() {
-        if (isAutomaticallyQualified) {
-            return Double.POSITIVE_INFINITY;
-        } else if (isDisqualified && !isTargetGroup){
-            return Double.NEGATIVE_INFINITY;
-        }
+    private double finalScore;
 
-        return clickedAdsCoefficient + 2 * ignoredAdsCoefficient + likedPagesCoefficient;
-    }
+//    public double getFinalScore() {
+//        if (isAutomaticallyQualified) {
+//            return Double.POSITIVE_INFINITY;
+//        }
+//
+//        return clickedAdsCoefficient + 2 * ignoredAdsCoefficient + likedPagesCoefficient;
+//    }
 }

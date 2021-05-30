@@ -33,14 +33,17 @@ public class AdvertisementRequestService {
             Candidate candidate = createCandidate5IgnoredAds();
             Candidate candidate2 = createCandidateNotTargetGroup();
             Candidate candidate3 = createCandidate5ClickedAds();
+            Candidate candidate4 = createCoeffCandidate();
 
             kSession.insert(request);
             kSession.insert(candidate);
             kSession.insert(candidate2);
             kSession.insert(candidate3);
+            kSession.insert(candidate4);
             kSession.fireAllRules();
 
             kSession.fireAllRules();
+            System.out.println();
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -88,6 +91,34 @@ public class AdvertisementRequestService {
         user.setClickedAdvertisements(new LinkedList<>());
         for(int i = 0; i < 5; i++)
             user.getClickedAdvertisements().add(getAdByGoogle());
+
+        candidate.setUser(user);
+        return candidate;
+    }
+
+    public Candidate createCoeffCandidate() {
+        Candidate candidate = new Candidate();
+        SocialMediaUser user = new SocialMediaUser();
+        user.setUser(new User());
+        user.getUser().setFirstName("Koef");
+        user.getUser().setLastName("Koefic");
+        user.setAge(18);
+        user.setCity("Belgrade");
+        user.setCountry("Serbia");
+
+        Advertisement ad = getAdByGoogle();
+        ad.getAdvertiser().setName("not google");
+        ad.setTags(new LinkedList<>());
+        ad.getTags().add(new Tag(0L, "technology"));
+
+        Advertisement ad2 = getAdByGoogle();
+        ad2.getAdvertiser().setName("definitely not google");
+        ad2.setTags(new LinkedList<>());
+        ad2.getTags().add(new Tag(0L, "retail"));
+
+        user.setClickedAdvertisements(new LinkedList<>());
+        user.getClickedAdvertisements().add(ad);
+        user.getClickedAdvertisements().add(ad2);
 
         candidate.setUser(user);
         return candidate;

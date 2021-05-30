@@ -17,7 +17,7 @@ public class AdvertisementDTO {
     private String title;
     private String content;
     private String targetUrl;
-    private List<TagDTO> tags;
+    private List<String> tags;
     private double budget;
     private AdvertiserDTO advertiser;
 }

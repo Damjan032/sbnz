@@ -5,7 +5,10 @@ import java.time.LocalDate;
 
 import com.sbnz.adsys.model.Candidate;
 import com.sbnz.adsys.model.AdvertisementRequest;
-import com.sbnz.adsys.model.Advertisement
+import com.sbnz.adsys.model.Advertisement;
+import com.sbnz.adsys.model.Tag;
+import com.sbnz.adsys.model.SocialMediaPage;
+import com.sbnz.adsys.model.SocialMediaUser;
 
 
 rule "Target Group Age" salience 10
@@ -39,7 +42,7 @@ rule "Is Target Group" salience 9
 end
 
 
-rule "Is not Target Group" salience 9
+rule "Is Not Target Group" salience 9
     when
         $c: Candidate(!(ageGroup && geographyGroup))
     then
@@ -47,13 +50,13 @@ rule "Is not Target Group" salience 9
 end
 
 
-rule "5+ ads ignored this month by the same company" salience 8
+rule "5+ Ads Ignored this Month by the Same Company" salience 8
     when
         $req: AdvertisementRequest($currentAd: advertisement, $currentAdvertiser: advertisement.advertiser)
         $c: Candidate(targetGroup)  @Watch(targetGroup)
         Number(intValue >= 5) from accumulate(
             Advertisement(
-                advertiser.name == $currentAdvertiser.name &&
+                advertiser == $currentAdvertiser &&
                 $currentAd.getDatePublished().isAfter(LocalDate.now().minusMonths(1))
             ) from $c.user.ignoredAdvertisements,
             count()
@@ -65,13 +68,13 @@ rule "5+ ads ignored this month by the same company" salience 8
 end
 
 
-rule "5+ ads clicked on this month by the same company" salience 7
+rule "5+ Ads Clicked on this Month by the Same Company" salience 7
     when
         $req: AdvertisementRequest($currentAd: advertisement, $currentAdvertiser: advertisement.advertiser)
         $c: Candidate(targetGroup && !disqualified)
         Number(intValue >= 5) from accumulate(
             Advertisement(
-                advertiser.name == $currentAdvertiser.name &&
+                advertiser == $currentAdvertiser &&
                 $currentAd.getDatePublished().isAfter(LocalDate.now().minusMonths(1))
             ) from $c.user.clickedAdvertisements,
             count()
@@ -85,7 +88,104 @@ end
 
 rule "Is In Pool" salience 6
     when
-        $c: Candidate(targetGroup && !disqualified && !automaticallyQualified)
+        $c: Candidate(targetGroup && !disqualified && !automaticallyQualified, $user: user)
     then
         System.out.println("Candidate with name: " + $c.getUser().fullName() + " still in the pool");
+end
+
+
+rule "Candidate and Company Interaction Coefficient" extends "Is In Pool" salience 5
+    when
+        $req: AdvertisementRequest($currentAdvertiser: advertisement.advertiser)
+        Number($positiveCoefficient: doubleValue) from accumulate (
+            Advertisement(advertiser == $currentAdvertiser) from $user.clickedAdvertisements,
+            count()
+        )
+        Number($negativeCoefficient: doubleValue) from accumulate (
+            Advertisement(advertiser == $currentAdvertiser) from $user.ignoredAdvertisements,
+            count()
+        )
+        eval($positiveCoefficient + $negativeCoefficient > 0)
+    then
+        double clickRatio = $positiveCoefficient / ($positiveCoefficient + $negativeCoefficient);
+        modify ($c) {setAdsByCompanyCoefficient(clickRatio)}
+ end
+
+
+rule "Calculate Clicked Ads Coefficient" extends "Is In Pool" salience 5
+    when
+        $req: AdvertisementRequest($currentAd: advertisement)
+        Number($clickCoeff: doubleValue) from accumulate (
+            Tag($singleTag: this) from $currentAd.tags and
+            Advertisement(tags contains $singleTag) from $user.clickedAdvertisements,
+            init(double cnt = 0;),
+            action(cnt += 1;),
+            result(cnt)
+        )
+    then
+        modify ($c) {setClickedAdsCoefficient($clickCoeff)}
+        System.out.println("this is gut " + $clickCoeff);
+ end
+
+
+rule "Calculate Ignored Ads Coefficient" extends "Is In Pool" salience 5
+     when
+         $req: AdvertisementRequest($currentAd: advertisement)
+         Number($ignoreCoeff: doubleValue) from accumulate (
+             Tag($singleTag: this) from $currentAd.tags and
+             Advertisement(tags contains $singleTag) from $user.ignoredAdvertisements,
+             init(double cnt = 0;),
+             action(cnt -= 1;),
+             result(cnt)
+         )
+     then
+        modify ($c) {setIgnoredAdsCoefficient($ignoreCoeff)}
+        System.out.println("this is nicht gut " + $ignoreCoeff);
+end
+
+
+rule "Calculate Liked Pages Coefficient" extends "Is In Pool" salience 5
+     when
+         $req: AdvertisementRequest($currentAd: advertisement)
+         Number($pageCoeff: doubleValue) from accumulate (
+             Tag($singleTag: this) from $currentAd.tags and
+             SocialMediaPage(categoryKeywords contains $singleTag) from $user.likedSocialMediaPages,
+             init(double cnt = 0;),
+             action(cnt += 1;),
+             result(cnt)
+         )
+     then
+        modify ($c) {setLikedPagesCoefficient($pageCoeff)}
+        System.out.println("pages " + $pageCoeff);
+end
+
+
+rule "Calculate Initial Score" extends "Is In Pool" salience 4
+    when
+    then
+        System.out.println("initial");
+        modify ($c) {setFinalScore(1)}
+end
+
+
+rule "Calculate Herd Coefficient" extends "Is In Pool" salience 3
+    when
+        Number($herdCoeff: doubleValue) from accumulate (
+            SocialMediaPage($userWhoLikeThePage: usersWhoLikeThePage) from $user.likedSocialMediaPages and
+            Candidate($userWhoLikeThePage contains user, user != $user,
+                targetGroup && !disqualified && !automaticallyQualified, $candidateScore: finalScore),
+            average($candidateScore)
+        )
+    then
+        System.out.println("herd " + $herdCoeff);
+        modify ($c) {setHerdCoefficient($herdCoeff)}
+end
+
+
+rule "Add Herd Coefficient to Final Score" extends "Is In Pool" salience 2
+    when
+    then
+        double newFinalScore = $c.getFinalScore() + 0.3 * $c.getHerdCoefficient();
+        System.out.println("final " + newFinalScore);
+        modify ($c) {setFinalScore(newFinalScore)}
 end

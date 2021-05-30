@@ -23,7 +23,7 @@ public class SocialMediaPage {
     private String name;
 
     @ManyToMany
-    private List<Keyword> categoryKeywords;
+    private List<Tag> categoryKeywords;
     
     @ManyToMany(fetch = FetchType.EAGER)
     private List<SocialMediaUser> usersWhoLikeThePage;

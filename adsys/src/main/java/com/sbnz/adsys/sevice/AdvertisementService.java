@@ -19,8 +19,8 @@ public class AdvertisementService {
     AdvertiserService advertiserService;
 
     public AdvertisementDTO toDTO(Advertisement advertisement) {
-        List<TagDTO> tags = advertisement.getTags().stream()
-                .map((tag) -> new TagDTO(tag.getId(), tag.getTag()))
+        List<String> tags = advertisement.getTags().stream()
+                .map(Tag::getTag)
                 .collect(Collectors.toList());
 
         return new AdvertisementDTO(advertisement.getId(), advertisement.getTitle(), advertisement.getContent(),
@@ -30,7 +30,7 @@ public class AdvertisementService {
 
     public Advertisement toEntity(AdvertisementDTO advertisementDTO) {
         List<Tag> tags = advertisementDTO.getTags().stream()
-                .map((tag) -> new Tag(tag.getId(), tag.getTag()))
+                .map((tag) -> new Tag(0L, tag))     // todo replace with tag from db
                 .collect(Collectors.toList());
 
         Advertiser advertiser = advertiserService.toEntity(advertisementDTO.getAdvertiser());

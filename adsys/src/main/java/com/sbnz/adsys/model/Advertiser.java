@@ -24,4 +24,14 @@ public class Advertiser {
     
     @OneToMany(mappedBy="advertiser")
     private List<Advertisement> advertisements;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        } else if (obj instanceof Advertiser) {
+            return this.name.equals(((Advertiser) obj).getName());
+        }
+        return false;
+    }
 }

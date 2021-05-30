@@ -21,4 +21,14 @@ public class Tag {
 
     @NotNull
     private String tag;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        } else if (obj instanceof Tag) {
+            return this.tag.equals(((Tag) obj).getTag());
+        }
+        return false;
+    }
 }
