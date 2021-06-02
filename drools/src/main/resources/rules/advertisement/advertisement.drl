@@ -1,0 +1,21 @@
+package rules.advertisement;
+import com.sbnz.adsys.model.*;
+import com.sbnz.adsys.event.*;
+global com.sbnz.adsys.sevice.SocialMediaUserService socialMediaUserService;
+
+declare SuspiciousAdEvent
+    @role(event)
+    @expires(10m)
+    advertisement: Advertisement
+    reason: String
+end
+rule "Ad has not been clicked for more than an hour"
+    when
+       $adEvent : AdvertisementViewEvent($ad: advertisement, $user: socialMediaUser)
+       not AdvertisementClickEvent (advertisement.getId()==$ad.getId(),
+        socialMediaUser.getUser().getId() == $user.getUser().getId() ,
+       this after[0s,10m] $adEvent )
+    then
+        socialMediaUserService.removeAdvertisementFromSocialMediaUser($user, $ad);
+        System.out.println("Nisi kliknuo");
+end

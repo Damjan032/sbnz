@@ -1,8 +1,12 @@
 package com.sbnz.adsys.repository;
 
 import com.sbnz.adsys.model.Event;
+import jdk.nashorn.internal.runtime.options.Option;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
-public interface EventRepository extends JpaRepository<Event, Long> {}
+public interface EventRepository extends JpaRepository<Event, Long> {
+}

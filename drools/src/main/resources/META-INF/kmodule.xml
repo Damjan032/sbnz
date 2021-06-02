@@ -7,4 +7,7 @@
 	<kbase name="login" eventProcessingMode="stream" packages="rules.login">
 		<ksession name="login-session"/>
 	</kbase>
+	<kbase name="advertisement" eventProcessingMode="stream" packages="rules.advertisement">
+		<ksession name="advertisement-session"/>
+	</kbase>
 </kmodule>

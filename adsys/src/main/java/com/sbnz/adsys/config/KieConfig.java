@@ -30,5 +30,9 @@ public class KieConfig {
         return kieContainer().newKieSession("login-session");
     }
     
+    @Bean(name = "advertisementSession")
+    public KieSession advertisementSession() {
+        return kieContainer().newKieSession("advertisement-session");
+    }
     
 }

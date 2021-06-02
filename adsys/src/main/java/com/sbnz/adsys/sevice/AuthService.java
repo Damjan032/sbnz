@@ -3,6 +3,7 @@ package com.sbnz.adsys.sevice;
 import com.sbnz.adsys.dto.LoginDTO;
 import com.sbnz.adsys.event.LoginEvent;
 import com.sbnz.adsys.model.User;
+import com.sbnz.adsys.repository.EventRepository;
 import com.sbnz.adsys.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.kie.api.runtime.KieSession;
@@ -27,7 +28,7 @@ public class AuthService {
       loginSession.fireAllRules();
       userRepository.save(loginEvent.getUser());
       if (!loginEvent.getUser().isEnabled()) {
-        System.out.println("Not allowed to login. You can not login after three failed attempts. Try again after 3 minutes.");
+        System.out.println("Not allowed to login. You can not login after three failed attempts. Try again after 5 minutes.");
       }
       return false;
     }

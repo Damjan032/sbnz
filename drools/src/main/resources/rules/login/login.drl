@@ -5,7 +5,7 @@ import com.sbnz.adsys.event.*;
 
 declare SuspiciousUserEvent
     @role(event)
-    @expires(3m)
+    @expires(5m)
     user: User
     reason: String
 end
@@ -16,11 +16,11 @@ rule "More than 3 logging in unsuccessfully in 1 minute from one user"
         Number(intValue>=3 ) from accumulate(
 			$accumulateLoginEvent: LoginEvent(user.getId() == $user.getId(), success == false) over window:time(2m), count($accumulateLoginEvent)
 		)
-		not (SuspiciousUserEvent(user.getId() == $user.getId(), reason == "Many unsuccessful logging in from same username"))
+		not (SuspiciousUserEvent(user.getId() == $user.getId(), reason == "Many unsuccessful logging in from same email"))
     then
     	System.out.println("Many unsuccessful logging in from same username");
     	$user.setEnabled(false);
-    	insert(new SuspiciousUserEvent($user, "Many unsuccessful logging in from same username"));
+    	insert(new SuspiciousUserEvent($user, "Many unsuccessful logging in from same email"));
 end
 
 rule "Successful logging in"
@@ -29,9 +29,9 @@ rule "Successful logging in"
         Number(intValue < 3 ) from accumulate(
 			$accumulateLoginEvent: LoginEvent(user.getId() == $user.getId(), success == false) over window:time(2m), count($accumulateLoginEvent)
 		)
-		not (SuspiciousUserEvent(user.id == $user.getId(), reason == "Many unsuccessful logging in from same username"))
+		not (SuspiciousUserEvent(user.id == $user.getId(), reason == "Many unsuccessful logging in from same email"))
     then
-    	System.out.println("User fine 1");
+    	System.out.println("Successful logging in");
     	$user.setEnabled(true);
 
 end
