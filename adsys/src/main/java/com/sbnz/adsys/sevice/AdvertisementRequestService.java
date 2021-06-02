@@ -129,6 +129,7 @@ public class AdvertisementRequestService {
         advertiser.setName("Google");
         Advertisement advertisement = new Advertisement();
         advertisement.setAdvertiser(advertiser);
+        advertisement.setDatePublished(LocalDate.now());
         return advertisement;
     }
 

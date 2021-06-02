@@ -8,14 +8,15 @@ import com.sbnz.adsys.model.AdvertisementRequest;
 import com.sbnz.adsys.model.Advertisement;
 import com.sbnz.adsys.model.Tag;
 import com.sbnz.adsys.model.SocialMediaPage;
-import com.sbnz.adsys.model.SocialMediaUser;
+import com.sbnz.adsys.model.SocialMediaUser
+import java.time.Duration;
 
 
 rule "Target Group Age" salience 10
 lock-on-active
     when
         $req: AdvertisementRequest($min: minAge, $max: maxAge)
-        $c : Candidate(user.age > $min, user.age < $max)
+        $c : Candidate(user.age >= $min, user.age <= $max)
     then
         System.out.println("Candidate with name: " + $c.getUser().fullName() + " satisfies the age condition");
         modify ($c) {setAgeGroup(true)}
@@ -57,7 +58,7 @@ rule "5+ Ads Ignored this Month by the Same Company" salience 8
         Number(intValue >= 5) from accumulate(
             Advertisement(
                 advertiser == $currentAdvertiser &&
-                $currentAd.getDatePublished().isAfter(LocalDate.now().minusMonths(1))
+                datePublished.isAfter(LocalDate.now().minusMonths(1))
             ) from $c.user.ignoredAdvertisements,
             count()
         )
@@ -75,7 +76,7 @@ rule "5+ Ads Clicked on this Month by the Same Company" salience 7
         Number(intValue >= 5) from accumulate(
             Advertisement(
                 advertiser == $currentAdvertiser &&
-                $currentAd.getDatePublished().isAfter(LocalDate.now().minusMonths(1))
+                datePublished.isAfter(LocalDate.now().minusMonths(1))
             ) from $c.user.clickedAdvertisements,
             count()
         )
@@ -90,7 +91,7 @@ rule "Is In Pool" salience 6
     when
         $c: Candidate(targetGroup && !disqualified && !automaticallyQualified, $user: user)
     then
-        System.out.println("Candidate with name: " + $c.getUser().fullName() + " still in the pool");
+        System.out.println("Candidate with name: " + $user.fullName() + " still in the pool");
 end
 
 
@@ -109,7 +110,7 @@ rule "Candidate and Company Interaction Coefficient" extends "Is In Pool" salien
     then
         double clickRatio = $positiveCoefficient / ($positiveCoefficient + $negativeCoefficient);
         modify ($c) {setAdsByCompanyCoefficient(clickRatio)}
- end
+end
 
 
 rule "Calculate Clicked Ads Coefficient" extends "Is In Pool" salience 5
@@ -117,15 +118,19 @@ rule "Calculate Clicked Ads Coefficient" extends "Is In Pool" salience 5
         $req: AdvertisementRequest($currentAd: advertisement)
         Number($clickCoeff: doubleValue) from accumulate (
             Tag($singleTag: this) from $currentAd.tags and
-            Advertisement(tags contains $singleTag) from $user.clickedAdvertisements,
+            Advertisement(tags contains $singleTag, $ad: this) from $user.clickedAdvertisements,
             init(double cnt = 0;),
-            action(cnt += 1;),
+            action({
+                double differenceInDays = Duration.between($currentAd.getDatePublished().atStartOfDay(),
+                                            $ad.getDatePublished().atStartOfDay()).toDays();
+                cnt += 1 / Math.max(Math.abs(differenceInDays), 1);
+            }),
             result(cnt)
         )
     then
         modify ($c) {setClickedAdsCoefficient($clickCoeff)}
         System.out.println("this is gut " + $clickCoeff);
- end
+end
 
 
 rule "Calculate Ignored Ads Coefficient" extends "Is In Pool" salience 5
@@ -133,10 +138,14 @@ rule "Calculate Ignored Ads Coefficient" extends "Is In Pool" salience 5
          $req: AdvertisementRequest($currentAd: advertisement)
          Number($ignoreCoeff: doubleValue) from accumulate (
              Tag($singleTag: this) from $currentAd.tags and
-             Advertisement(tags contains $singleTag) from $user.ignoredAdvertisements,
-             init(double cnt = 0;),
-             action(cnt -= 1;),
-             result(cnt)
+             Advertisement(tags contains $singleTag, $ad: this) from $user.ignoredAdvertisements,
+            init(double cnt = 0;),
+            action({
+                double differenceInDays = Duration.between($currentAd.getDatePublished().atStartOfDay(),
+                                            $ad.getDatePublished().atStartOfDay()).toDays();
+                cnt -= 1 / Math.max(differenceInDays, 1);
+            }),
+            result(cnt)
          )
      then
         modify ($c) {setIgnoredAdsCoefficient($ignoreCoeff)}
@@ -150,9 +159,7 @@ rule "Calculate Liked Pages Coefficient" extends "Is In Pool" salience 5
          Number($pageCoeff: doubleValue) from accumulate (
              Tag($singleTag: this) from $currentAd.tags and
              SocialMediaPage(categoryKeywords contains $singleTag) from $user.likedSocialMediaPages,
-             init(double cnt = 0;),
-             action(cnt += 1;),
-             result(cnt)
+             count()
          )
      then
         modify ($c) {setLikedPagesCoefficient($pageCoeff)}
@@ -188,4 +195,20 @@ rule "Add Herd Coefficient to Final Score" extends "Is In Pool" salience 2
         double newFinalScore = $c.getFinalScore() + 0.3 * $c.getHerdCoefficient();
         System.out.println("final " + newFinalScore);
         modify ($c) {setFinalScore(newFinalScore)}
+end
+
+
+rule "Set Final Score for Automatically Qualified Candidates" salience 2
+    when
+        $c: Candidate(targetGroup && automaticallyQualified)
+    then
+        modify ($c) {setFinalScore(Double.POSITIVE_INFINITY)}
+end
+
+
+rule "Set Final Score for Disqualified Candidates" salience 2
+    when
+        $c: Candidate(targetGroup && disqualified)
+    then
+        modify ($c) {setFinalScore(Double.NEGATIVE_INFINITY)}
 end

@@ -117,6 +117,13 @@
 			<artifactId>drools</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.droolsassert</groupId>
+			<artifactId>droolsassert</artifactId>
+			<version>2.3.10</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
