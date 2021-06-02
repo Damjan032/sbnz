@@ -31,6 +31,10 @@ public class AuthService {
       }
       return false;
     }
+    LoginEvent loginEvent = new LoginEvent(new Date(), user.get(),true);
+    loginSession.insert(loginEvent);
+    loginSession.fireAllRules();
+    userRepository.save(user.get());
     return true;
   }
 }
