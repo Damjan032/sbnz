@@ -4,4 +4,7 @@
 	<kbase name="rules" packages="sbnz.integracija">
 		<ksession name="ksession-rules"/>
 	</kbase>
+	<kbase name="login" eventProcessingMode="stream" packages="rules.login">
+		<ksession name="login-session"/>
+	</kbase>
 </kmodule>

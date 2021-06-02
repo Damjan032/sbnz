@@ -4,6 +4,7 @@ import com.sbnz.adsys.utils.Constants;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieScanner;
 import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -23,5 +24,11 @@ public class KieConfig {
         kieScanner.start(Constants.SCAN_INTERVAL);
         return kieContainer;
     }
-
+    
+    @Bean(name = "loginSession")
+    public KieSession loginSession() {
+        return kieContainer().newKieSession("login-session");
+    }
+    
+    
 }

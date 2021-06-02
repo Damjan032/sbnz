@@ -28,6 +28,8 @@ public class User {//implements UserDetails {
     @Column(nullable = false)
     private String password;
     
+
+    
     @Column(nullable = false)
     private String firstName;
     
@@ -36,8 +38,6 @@ public class User {//implements UserDetails {
     
     @OneToMany(mappedBy="user")
     private List<Event> events;
-    
-    private Long lastPasswordResetDate;
     
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_authority",
