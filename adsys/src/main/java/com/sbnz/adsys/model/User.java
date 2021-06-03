@@ -27,9 +27,7 @@ public class User {//implements UserDetails {
     
     @Column(nullable = false)
     private String password;
-    
 
-    
     @Column(nullable = false)
     private String firstName;
     
@@ -52,35 +50,13 @@ public class User {//implements UserDetails {
         super();
         this.id = id;
     }
-    
-//    @Override
-//    public List<Authority> getAuthorities() {
-//        return this.authorities;
-//    }
-//    
-//    @Override
-//    public boolean isAccountNonExpired() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isAccountNonLocked() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isCredentialsNonExpired() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isEnabled() {
-//        return this.enabled;
-//    }
-//
-//    @Override
-//    public String getUsername() {
-//        return this.email;
-//    }
-    
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        else if (obj instanceof User) {
+            return this.getEmail().equals(((User) obj).getEmail());
+        }
+        return false;
+    }
 }

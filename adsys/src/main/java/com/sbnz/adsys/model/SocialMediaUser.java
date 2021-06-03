@@ -39,6 +39,9 @@ public class SocialMediaUser{
     private List<Advertisement> advertisementsToBeShown;
 
     @ManyToMany
+    private List<Advertisement> seenAdvertisements;
+
+    @ManyToMany
     private List<Advertisement> ignoredAdvertisements;
 
     @ManyToMany
@@ -50,5 +53,19 @@ public class SocialMediaUser{
 
     public String fullLocation() {
         return city + ", " + country;
+    }
+
+    public String getEmail() {
+        return user.getEmail();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        else if (obj instanceof SocialMediaUser){
+            SocialMediaUser user = (SocialMediaUser) obj;
+            return this.user.equals(user.getUser());
+        }
+        return false;
     }
 }

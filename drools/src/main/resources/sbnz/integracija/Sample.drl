@@ -11,6 +11,12 @@ import com.sbnz.adsys.model.SocialMediaPage;
 import com.sbnz.adsys.model.SocialMediaUser
 import java.time.Duration;
 
+global Double COMPANY_COEFFICIENT;
+global Double CLICKED_ADS_COEFFICIENT;
+global Double IGNORED_ADS_COEFFICIENT;
+global Double LIKED_PAGES_COEFFICIENT;
+global Double HERD_COEFFICIENT;
+
 
 rule "Target Group Age" salience 10
 lock-on-active
@@ -137,13 +143,13 @@ rule "Calculate Ignored Ads Coefficient" extends "Is In Pool" salience 5
      when
          $req: AdvertisementRequest($currentAd: advertisement)
          Number($ignoreCoeff: doubleValue) from accumulate (
-             Tag($singleTag: this) from $currentAd.tags and
-             Advertisement(tags contains $singleTag, $ad: this) from $user.ignoredAdvertisements,
+            Tag($singleTag: this) from $currentAd.tags and
+            Advertisement(tags contains $singleTag, $ad: this) from $user.ignoredAdvertisements,
             init(double cnt = 0;),
             action({
                 double differenceInDays = Duration.between($currentAd.getDatePublished().atStartOfDay(),
                                             $ad.getDatePublished().atStartOfDay()).toDays();
-                cnt -= 1 / Math.max(differenceInDays, 1);
+                cnt -= 1 / Math.max(Math.abs(differenceInDays), 1);
             }),
             result(cnt)
          )
@@ -170,8 +176,13 @@ end
 rule "Calculate Initial Score" extends "Is In Pool" salience 4
     when
     then
-        System.out.println("initial");
-        modify ($c) {setFinalScore(1)}
+        double score = $c.getAdsByCompanyCoefficient() * COMPANY_COEFFICIENT +
+            $c.getClickedAdsCoefficient() * CLICKED_ADS_COEFFICIENT +
+            $c.getIgnoredAdsCoefficient() * IGNORED_ADS_COEFFICIENT +
+            $c.getLikedPagesCoefficient() * LIKED_PAGES_COEFFICIENT;
+
+        System.out.println("initial " + $c.getUser().getEmail() + " " + score);
+        modify ($c) {setInitialScore(score)}
 end
 
 
@@ -180,11 +191,11 @@ rule "Calculate Herd Coefficient" extends "Is In Pool" salience 3
         Number($herdCoeff: doubleValue) from accumulate (
             SocialMediaPage($userWhoLikeThePage: usersWhoLikeThePage) from $user.likedSocialMediaPages and
             Candidate($userWhoLikeThePage contains user, user != $user,
-                targetGroup && !disqualified && !automaticallyQualified, $candidateScore: finalScore),
+                targetGroup && !disqualified && !automaticallyQualified, $candidateScore: initialScore),
             average($candidateScore)
         )
     then
-        System.out.println("herd " + $herdCoeff);
+        System.out.println("herd " + $c.getUser().getEmail() + " " + $herdCoeff);
         modify ($c) {setHerdCoefficient($herdCoeff)}
 end
 
@@ -192,9 +203,9 @@ end
 rule "Add Herd Coefficient to Final Score" extends "Is In Pool" salience 2
     when
     then
-        double newFinalScore = $c.getFinalScore() + 0.3 * $c.getHerdCoefficient();
-        System.out.println("final " + newFinalScore);
-        modify ($c) {setFinalScore(newFinalScore)}
+        double finalScore = $c.getInitialScore() + HERD_COEFFICIENT * $c.getHerdCoefficient();
+        System.out.println("final " + $c.getUser().getEmail() + " " + finalScore);
+        modify ($c) {setFinalScore(finalScore)}
 end
 
 

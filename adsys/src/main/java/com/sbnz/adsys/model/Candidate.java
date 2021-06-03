@@ -26,13 +26,6 @@ public class Candidate {
     private double likedPagesCoefficient = 0;
     private double herdCoefficient = 0;
 
+    private double initialScore;
     private double finalScore;
-
-//    public double getFinalScore() {
-//        if (isAutomaticallyQualified) {
-//            return Double.POSITIVE_INFINITY;
-//        }
-//
-//        return clickedAdsCoefficient + 2 * ignoredAdsCoefficient + likedPagesCoefficient;
-//    }
 }

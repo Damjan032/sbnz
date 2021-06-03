@@ -5,10 +5,12 @@ import com.sbnz.adsys.util.DroolsTestUtils;
 import org.droolsassert.DroolsAssert;
 import org.droolsassert.DroolsSession;
 import org.droolsassert.TestRules;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.time.LocalDate;
+import java.util.LinkedList;
 
 import static org.junit.Assert.*;
 
@@ -21,6 +23,15 @@ public class CalculateCoefficientRules {
 
     @Rule
     public DroolsAssert drools = new DroolsAssert();
+
+    @Before
+    public void init() {
+        drools.setGlobal("COMPANY_COEFFICIENT", 1.);
+        drools.setGlobal("CLICKED_ADS_COEFFICIENT", 1.);
+        drools.setGlobal("IGNORED_ADS_COEFFICIENT", 1.);
+        drools.setGlobal("LIKED_PAGES_COEFFICIENT", 1.);
+        drools.setGlobal("HERD_COEFFICIENT", 1.);
+    }
 
     @Test
     @TestRules(expected = "Candidate and Company Interaction Coefficient", ignore = "*")
@@ -177,16 +188,54 @@ public class CalculateCoefficientRules {
     }
 
 
-//    @Test
-//    @TestRules(expected = "Calculate Herd Coefficient", ignore = "*")
-//    public void testHerdCoefficient_TwoCandidatesWithDifferentScores() {
-//        Candidate candidate1 = DroolsTestUtils.getBasicCandidate();
-//        AdvertisementRequest request = DroolsTestUtils.getAdvertisementRequestToFitCandidate(candidate1);
-//        request.getAdvertisement().setTags(DroolsTestUtils.createTags("sport", "football"));
-//
-//        Candidate candidate2 = DroolsTestUtils.getBasicCandidate();
-//
-//        drools.insertAndFire(candidate1, request);
-//        assertEquals(0, candidate1.getLikedPagesCoefficient(), 1e-5);
-//    }
+    @Test
+    @TestRules(expected = "Calculate Herd Coefficient", ignore = "*")
+    public void testHerdCoefficient_TwoCandidatesWithDifferentScores() {
+        SocialMediaPage page = new SocialMediaPage();
+        page.setUsersWhoLikeThePage(new LinkedList<>());
+        page.setCategoryKeywords(DroolsTestUtils.createTags("football", "outdoors"));
+
+        Candidate candidate1 = DroolsTestUtils.getBasicCandidate("cand1");
+        candidate1.getUser().getLikedSocialMediaPages().add(page);
+        page.getUsersWhoLikeThePage().add(candidate1.getUser());
+
+        AdvertisementRequest request = DroolsTestUtils.getAdvertisementRequestToFitCandidate(candidate1);
+        request.getAdvertisement().setTags(DroolsTestUtils.createTags("sport", "football"));
+
+        Candidate candidate2 = DroolsTestUtils.getBasicCandidate("cand2");
+        Advertisement ad2 = DroolsTestUtils.getBasicAdvertisement();
+        ad2.setTags(DroolsTestUtils.createTags("sport", "football", "basketball"));
+        candidate2.getUser().getClickedAdvertisements().add(ad2);
+        candidate2.getUser().getLikedSocialMediaPages().add(page);
+        page.getUsersWhoLikeThePage().add(candidate2.getUser());
+
+        Candidate candidate3 = DroolsTestUtils.getBasicCandidate("cand3");
+        candidate3.getUser().getLikedSocialMediaPages().add(page);
+        page.getUsersWhoLikeThePage().add(candidate3.getUser());
+
+        drools.insertAndFire(candidate1, candidate2, candidate3, request);
+        double average = DroolsTestUtils.getAverage(candidate2.getInitialScore(), candidate3.getInitialScore());
+
+        assertEquals(average, candidate1.getHerdCoefficient(), 1e-5);
+    }
+
+    @Test
+    @TestRules(expected = "Calculate Herd Coefficient", ignore = "*")
+    public void testHerdCoefficient_ZeroPeopleInHerd() {
+        SocialMediaPage page = new SocialMediaPage();
+        page.setUsersWhoLikeThePage(new LinkedList<>());
+        page.setCategoryKeywords(DroolsTestUtils.createTags("football", "outdoors"));
+
+        Candidate candidate1 = DroolsTestUtils.getBasicCandidate("cand1");
+        candidate1.getUser().getLikedSocialMediaPages().add(page);
+        page.getUsersWhoLikeThePage().add(candidate1.getUser());
+
+        AdvertisementRequest request = DroolsTestUtils.getAdvertisementRequestToFitCandidate(candidate1);
+        request.getAdvertisement().setTags(DroolsTestUtils.createTags("sport", "football"));
+
+        drools.insertAndFire(candidate1, request);
+        assertEquals(0, candidate1.getHerdCoefficient(), 1e-5);
+    }
+
+
 }

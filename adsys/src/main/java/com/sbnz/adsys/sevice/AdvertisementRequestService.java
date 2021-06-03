@@ -17,6 +17,14 @@ public class AdvertisementRequestService {
     @Autowired
     AdvertisementService advertisementService;
 
+    private static final double COMPANY_COEFFICIENT = 1;
+    private static final double CLICKED_ADS_COEFFICIENT = 1;
+    private static final double IGNORED_ADS_COEFFICIENT = 1;
+    private static final double LIKED_PAGES_COEFFICIENT = 1;
+    private static final double HERD_COEFFICIENT = 1;
+
+
+
     public void submit(AdvertisementRequestDTO requestDTO) {
         AdvertisementRequest request = toEntity(requestDTO);
         droolsTest(request);
@@ -40,7 +48,12 @@ public class AdvertisementRequestService {
             kSession.insert(candidate2);
             kSession.insert(candidate3);
             kSession.insert(candidate4);
-            kSession.fireAllRules();
+
+            kSession.setGlobal("COMPANY_COEFFICIENT", COMPANY_COEFFICIENT);
+            kSession.setGlobal("CLICKED_ADS_COEFFICIENT", CLICKED_ADS_COEFFICIENT);
+            kSession.setGlobal("IGNORED_ADS_COEFFICIENT", IGNORED_ADS_COEFFICIENT);
+            kSession.setGlobal("LIKED_PAGES_COEFFICIENT", LIKED_PAGES_COEFFICIENT);
+            kSession.setGlobal("HERD_COEFFICIENT", HERD_COEFFICIENT);
 
             kSession.fireAllRules();
             System.out.println();
@@ -55,6 +68,7 @@ public class AdvertisementRequestService {
         user.setUser(new User());
         user.getUser().setFirstName("Djura");
         user.getUser().setLastName("Djuric");
+        user.getUser().setEmail("djura");
         user.setAge(14);
         user.setCity("Berlin");
         user.setCountry("Germany");
@@ -68,6 +82,7 @@ public class AdvertisementRequestService {
         user.setUser(new User());
         user.getUser().setFirstName("Pera");
         user.getUser().setLastName("Peric");
+        user.getUser().setEmail("pera");
         user.setAge(18);
         user.setCity("Novi Sad");
         user.setCountry("Serbia");
@@ -85,6 +100,7 @@ public class AdvertisementRequestService {
         user.setUser(new User());
         user.getUser().setFirstName("Jovan");
         user.getUser().setLastName("Jovanovic");
+        user.getUser().setEmail("jova");
         user.setAge(18);
         user.setCity("Belgrade");
         user.setCountry("Serbia");
@@ -102,6 +118,7 @@ public class AdvertisementRequestService {
         user.setUser(new User());
         user.getUser().setFirstName("Koef");
         user.getUser().setLastName("Koefic");
+        user.getUser().setEmail("koef");
         user.setAge(18);
         user.setCity("Belgrade");
         user.setCountry("Serbia");

@@ -7,6 +7,7 @@ import com.sbnz.adsys.util.DroolsTestUtils;
 import org.droolsassert.DroolsAssert;
 import org.droolsassert.DroolsSession;
 import org.droolsassert.TestRules;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -24,6 +25,15 @@ public class TargetGroupRules {
 
     @Rule
     public DroolsAssert drools = new DroolsAssert();
+
+    @Before
+    public void init() {
+        drools.setGlobal("COMPANY_COEFFICIENT", 1.0);
+        drools.setGlobal("CLICKED_ADS_COEFFICIENT", 1.0);
+        drools.setGlobal("IGNORED_ADS_COEFFICIENT", 1.0);
+        drools.setGlobal("LIKED_PAGES_COEFFICIENT", 1.0);
+        drools.setGlobal("HERD_COEFFICIENT", 1.0);
+    }
 
     @Test
     @TestRules(expected = "Target Group Age", ignore = "*")

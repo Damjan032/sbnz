@@ -29,6 +29,12 @@ public class DroolsTestUtils {
         return candidate;
     }
 
+    public static Candidate getBasicCandidate(String email) {
+        Candidate candidate = getBasicCandidate();
+        candidate.getUser().getUser().setEmail(email);
+        return candidate;
+    }
+
     public static Advertisement getBasicAdvertisement() {
         Advertiser advertiser = new Advertiser();
         advertiser.setAdvertisements(new LinkedList<>());
