@@ -41,6 +41,11 @@ public class DroolsTestUtils {
         user.getUser().setEmail(email);
         return user;
     }
+    
+    public static User createUser() {
+        return new User(55L, "admin@mai.com", "admin123", "admin",
+                "admin", null,  null, true);
+    }
 
     public static Candidate getBasicCandidate(String email) {
         Candidate candidate = getBasicCandidate();
