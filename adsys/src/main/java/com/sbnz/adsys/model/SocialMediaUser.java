@@ -60,6 +60,11 @@ public class SocialMediaUser{
     }
 
     @Override
+    public String toString() {
+        return fullName();
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if(this == obj) return true;
         else if (obj instanceof SocialMediaUser){

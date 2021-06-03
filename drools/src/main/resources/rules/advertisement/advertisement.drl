@@ -1,6 +1,8 @@
 package rules.advertisement;
+
 import com.sbnz.adsys.model.*;
 import com.sbnz.adsys.event.*;
+
 global com.sbnz.adsys.sevice.SocialMediaUserService socialMediaUserService;
 
 
@@ -8,28 +10,27 @@ rule "Ad has been seen"
     when
        $adEvent : AdvertisementViewEvent($ad: advertisement, $user: socialMediaUser)
     then
-//        socialMediaUserService.removeAdvertisementFromSocialMediaUser($user, $ad);
-        System.out.println($user.fullName() + " has seen the ad");
+        socialMediaUserService.adSeenByUser($ad, $user);
 end
+
 
 rule "Ad has been clicked within 10 minutes"
     when
        $adEvent : AdvertisementViewEvent($ad: advertisement, $user: socialMediaUser)
-       AdvertisementClickEvent (advertisement.getId()==$ad.getId(),
-        socialMediaUser.getUser().getId() == $user.getUser().getId() ,
+       AdvertisementClickEvent (advertisement.getId() == $ad.getId(),
+        socialMediaUser.getUser().getId() == $user.getUser().getId(),
        this after[0s,10m] $adEvent )
     then
-//        socialMediaUserService.removeAdvertisementFromSocialMediaUser($user, $ad);
-        System.out.println($user.fullName() + " clicked on ad");
+        socialMediaUserService.adClickedByUser($ad, $user);
 end
+
 
 rule "Ad has not been clicked for more than 10 mins"
     when
        $adEvent : AdvertisementViewEvent($ad: advertisement, $user: socialMediaUser)
-       not AdvertisementClickEvent (advertisement.getId()==$ad.getId(),
-        socialMediaUser.getUser().getId() == $user.getUser().getId() ,
+       not AdvertisementClickEvent (advertisement.getId() == $ad.getId(),
+        socialMediaUser.getUser().getId() == $user.getUser().getId(),
        this after[0s,10m] $adEvent )
     then
-//        socialMediaUserService.removeAdvertisementFromSocialMediaUser($user, $ad);
-        System.out.println($user.fullName() + " ignored ad");
+        socialMediaUserService.adIgnoredByUser($ad, $user);
 end
