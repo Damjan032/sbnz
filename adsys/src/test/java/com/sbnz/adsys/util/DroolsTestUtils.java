@@ -28,6 +28,11 @@ public class DroolsTestUtils {
         candidate.setUser(user);
         return candidate;
     }
+    
+    public static User createUser() {
+        return new User(55L, "admin@mai.com", "admin123", "admin",
+                "admin", null,  null, true);
+    }
 
     public static Candidate getBasicCandidate(String email) {
         Candidate candidate = getBasicCandidate();
