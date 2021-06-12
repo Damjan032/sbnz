@@ -1,16 +1,10 @@
 import router from "../../router/index";
 import axios from "axios";
-const tokenResponse = JSON.parse(localStorage.getItem('token'));
-let initialToken = '';
-if (tokenResponse) {
-  initialToken = tokenResponse.accessToken;
-
-}
 
 const state = {
   username: '',
   userId: null,
-  token: initialToken,
+  token: null,
   authorities: [],
   roles: [],
 };

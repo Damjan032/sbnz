@@ -3,10 +3,12 @@ package com.sbnz.adsys.sevice;
 import com.sbnz.adsys.dto.AuthTokenDto;
 import com.sbnz.adsys.dto.LoginDTO;
 import com.sbnz.adsys.event.LoginEvent;
+import com.sbnz.adsys.exception.AuthException;
 import com.sbnz.adsys.model.User;
 import com.sbnz.adsys.repository.UserRepository;
 import com.sbnz.adsys.security.TokenUtils;
 import lombok.AllArgsConstructor;
+import org.h2.security.auth.AuthConfigException;
 import org.kie.api.runtime.KieSession;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,9 +40,9 @@ public class AuthService {
       userRepository.save(loginEvent.getUser());
       if (!loginEvent.getUser().isEnabled()) {
         System.out.println("Not allowed to login. You can not login after three failed attempts. Try again after 5 minutes.");
+        throw new AuthException("Acc blocked");
       }
-      System.out.println("Usa sam odje");
-      return null;
+     throw new AuthException("Wrong password");
     }
     LoginEvent loginEvent = new LoginEvent(new Date(), user.get(),true);
     loginSession.insert(loginEvent);
