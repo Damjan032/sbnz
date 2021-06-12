@@ -1,4 +1,8 @@
-insert into user (email, password, first_name, last_name, enabled) values ('superadmin@mail.com', 'admin123', 'Super', 'Admin', true);
+INSERT INTO authority (name) VALUES ('ADMIN');
+INSERT INTO authority (name) VALUES ('USER');
+--
+insert into user (id, email, password, first_name, last_name, enabled) values (1,'superadmin@mail.com', '$2a$10$sfOM0tcraqVA6/3zfgS9HuiX7j41RYNBF/Wsm96xnhDFICeM1CR2O', 'Super', 'Admin', true);
+insert into user_authority (user_id, authority_id) values (1, 1);
 
 insert into advertiser (name) value ('Google');
 

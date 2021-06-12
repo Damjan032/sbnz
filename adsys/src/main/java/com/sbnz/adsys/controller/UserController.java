@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/api/users", produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
 public class UserController {
-    private AuthService authService;
+    
+    private final AuthService authService;
     
     @GetMapping()
 	public ResponseEntity<Void> getUsers() {

@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 public class DroolsTestUtils {
 
@@ -31,7 +32,7 @@ public class DroolsTestUtils {
     
     public static User createUser() {
         return new User(55L, "admin@mai.com", "admin123", "admin",
-                "admin", null,  null, true);
+                "admin",  null, true);
     }
 
     public static Candidate getBasicCandidate(String email) {

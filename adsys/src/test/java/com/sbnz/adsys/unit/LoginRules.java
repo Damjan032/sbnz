@@ -8,6 +8,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.util.Date;
+import java.util.UUID;
 
 @DroolsSession(resources = {
         "classpath*:/rules/login/login.drl"},
@@ -62,6 +63,6 @@ public class LoginRules {
     
     public static User createUser() {
         return new User(55L, "admin@mai.com", "admin123", "admin",
-                "admin", null,  null, true);
+                "admin",  null, true);
     }
 }
