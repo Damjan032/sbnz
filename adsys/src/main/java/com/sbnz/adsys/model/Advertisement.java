@@ -45,4 +45,18 @@ public class Advertisement {
 
     @NotNull
     private LocalDate datePublished;
+
+    @Override
+    public String toString() {
+        return title + " by: " + advertiser.getName();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        else if (obj instanceof Advertisement) {
+            return this.id.equals(((Advertisement) obj).getId());
+        }
+        return false;
+    }
 }

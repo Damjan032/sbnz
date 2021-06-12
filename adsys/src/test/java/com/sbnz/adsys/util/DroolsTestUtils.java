@@ -14,7 +14,14 @@ public class DroolsTestUtils {
 
     public static Candidate getBasicCandidate() {
         Candidate candidate = new Candidate();
+        SocialMediaUser user = getBasicUser();
+        candidate.setUser(user);
+        return candidate;
+    }
+
+    public static SocialMediaUser getBasicUser() {
         SocialMediaUser user = new SocialMediaUser();
+        user.setId(0L);
         user.setUser(new User());
         user.getUser().setFirstName("User");
         user.getUser().setLastName("Useric");
@@ -25,9 +32,15 @@ public class DroolsTestUtils {
         user.setClickedAdvertisements(new LinkedList<>());
         user.setIgnoredAdvertisements(new LinkedList<>());
         user.setLikedSocialMediaPages(new LinkedList<>());
+        user.setAdvertisementsToBeShown(new LinkedList<>());
+        user.setSeenAdvertisements(new LinkedList<>());
+        return user;
+    }
 
-        candidate.setUser(user);
-        return candidate;
+    public SocialMediaUser getBasicUser(String email){
+        SocialMediaUser user = getBasicUser();
+        user.getUser().setEmail(email);
+        return user;
     }
     
     public static User createUser() {
@@ -47,6 +60,8 @@ public class DroolsTestUtils {
         advertiser.setName("Google");
 
         Advertisement ad = new Advertisement();
+        ad.setId(0L);
+        ad.setTitle("Good search engine");
         ad.setTags(new LinkedList<>());
         ad.setDatePublished(LocalDate.now());
         ad.setAdvertiser(advertiser);
