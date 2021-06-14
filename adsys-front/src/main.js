@@ -7,7 +7,7 @@ import Axios from "axios";
 import VueAxios from "vue-axios";
 
 Vue.use(VueAxios, Axios);
-Vue.axios.defaults.baseURL = "http://localhost:8080";
+Vue.axios.defaults.baseURL = "http://localhost:8088";
 
 
 

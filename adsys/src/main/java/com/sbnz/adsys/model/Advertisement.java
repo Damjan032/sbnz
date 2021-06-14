@@ -1,9 +1,6 @@
 package com.sbnz.adsys.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -16,26 +13,21 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Builder
 public class Advertisement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     
-    @NotNull
     private String title;
 
-    @NotNull
     private String content;
 
-    @NotNull
     private String targetUrl;
     
     @ManyToMany
     private List<Tag> tags;
 
-    @NotNull
-    private double budget;
-    
     @OneToMany(mappedBy="user")
     private List<Event> events;
     
@@ -43,7 +35,6 @@ public class Advertisement {
     @JoinColumn(name="advertiser_id", nullable=false)
     private Advertiser advertiser;
 
-    @NotNull
     private LocalDate datePublished;
 
     @Override

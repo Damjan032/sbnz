@@ -1,9 +1,6 @@
 package com.sbnz.adsys.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -13,6 +10,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @Entity
+@Builder
 public class AdvertisementRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +21,9 @@ public class AdvertisementRequest {
     
     @NotNull
     private int maxAge = 999;
+
+    @NotNull
+    private double budget;
     
     @NotNull
     private String geographicLocation = "";

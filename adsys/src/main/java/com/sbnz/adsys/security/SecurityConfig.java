@@ -1,7 +1,7 @@
 package com.sbnz.adsys.security;
 
 
-import com.sbnz.adsys.sevice.UserService;
+import com.sbnz.adsys.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

@@ -2,13 +2,15 @@ package com.sbnz.adsys.controller;
 
 import com.sbnz.adsys.dto.AuthTokenDto;
 import com.sbnz.adsys.dto.LoginDTO;
-import com.sbnz.adsys.sevice.AuthService;
-import com.sbnz.adsys.sevice.UserService;
-import lombok.AllArgsConstructor;
+import com.sbnz.adsys.service.AuthService;
+import com.sbnz.adsys.service.UserService;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
+
+import lombok.AllArgsConstructor;
 
 import javax.validation.Valid;
 

@@ -1,4 +1,4 @@
-package com.sbnz.adsys.sevice;
+package com.sbnz.adsys.service;
 
 import com.sbnz.adsys.dto.AdvertisementRequestDTO;
 import com.sbnz.adsys.model.*;
@@ -22,7 +22,6 @@ public class AdvertisementRequestService {
     private static final double IGNORED_ADS_COEFFICIENT = 1;
     private static final double LIKED_PAGES_COEFFICIENT = 1;
     private static final double HERD_COEFFICIENT = 1;
-
 
 
     public void submit(AdvertisementRequestDTO requestDTO) {
@@ -62,7 +61,7 @@ public class AdvertisementRequestService {
         }
     }
 
-    public Candidate createCandidateNotTargetGroup(){
+    public Candidate createCandidateNotTargetGroup() {
         Candidate candidate = new Candidate();
         SocialMediaUser user = new SocialMediaUser();
         user.setUser(new User());
@@ -87,7 +86,7 @@ public class AdvertisementRequestService {
         user.setCity("Novi Sad");
         user.setCountry("Serbia");
         user.setIgnoredAdvertisements(new LinkedList<>());
-        for(int i = 0; i < 5; i++)
+        for (int i = 0; i < 5; i++)
             user.getIgnoredAdvertisements().add(getAdByGoogle());
 
         candidate.setUser(user);
@@ -105,7 +104,7 @@ public class AdvertisementRequestService {
         user.setCity("Belgrade");
         user.setCountry("Serbia");
         user.setClickedAdvertisements(new LinkedList<>());
-        for(int i = 0; i < 5; i++)
+        for (int i = 0; i < 5; i++)
             user.getClickedAdvertisements().add(getAdByGoogle());
 
         candidate.setUser(user);
@@ -151,13 +150,26 @@ public class AdvertisementRequestService {
     }
 
     public AdvertisementRequestDTO toDTO(AdvertisementRequest request) {
-        return new AdvertisementRequestDTO(request.getId(), request.getMinAge(), request.getMaxAge(),
-                request.getGeographicLocation(), advertisementService.toDTO(request.getAdvertisement()));
+
+        return AdvertisementRequestDTO.builder()
+                .id(request.getId())
+                .minAge(request.getMinAge())
+                .maxAge(request.getMaxAge())
+                .geographicLocation(request.getGeographicLocation())
+                .budget(request.getBudget())
+                .advertisement(advertisementService.toDTO(request.getAdvertisement()))
+                .build();
     }
 
-    public AdvertisementRequest toEntity(AdvertisementRequestDTO requestDTO) {
-        Advertisement advertisement = advertisementService.toEntity(requestDTO.getAdvertisement());
-        return new AdvertisementRequest(requestDTO.getId(), requestDTO.getMinAge(), requestDTO.getMaxAge(),
-                requestDTO.getGeographicLocation(), advertisement);
+    public AdvertisementRequest toEntity(AdvertisementRequestDTO dto) {
+
+        return AdvertisementRequest.builder()
+                .id(dto.getId())
+                .minAge(dto.getMinAge())
+                .maxAge(dto.getMaxAge())
+                .geographicLocation(dto.getGeographicLocation())
+                .budget(dto.getBudget())
+                .advertisement(advertisementService.toEntity(dto.getAdvertisement()))
+                .build();
     }
 }

@@ -1,9 +1,7 @@
-package com.sbnz.adsys.sevice;
+package com.sbnz.adsys.service;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import org.kie.api.builder.Results;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;

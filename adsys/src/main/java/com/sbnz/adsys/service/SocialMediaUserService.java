@@ -1,18 +1,39 @@
-package com.sbnz.adsys.sevice;
+package com.sbnz.adsys.service;
 
+import com.sbnz.adsys.dto.AdvertisementDTO;
+import com.sbnz.adsys.dto.SocialMediaPageDTO;
+import com.sbnz.adsys.dto.SocialMediaUserDTO;
 import com.sbnz.adsys.model.Advertisement;
+import com.sbnz.adsys.model.SocialMediaPage;
 import com.sbnz.adsys.model.SocialMediaUser;
 import com.sbnz.adsys.repository.SocialMediaUserRepository;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@NoArgsConstructor
 public class SocialMediaUserService {
+
+    @Autowired
     private SocialMediaUserRepository socialMediaUserRepository;
+
+    @Autowired
+    private AdvertisementService advertisementService;
+
+    @Autowired
+    private SocialMediaPageService pageDTO;
+
+    public void create() {
+
+    }
 
     @Transactional
     public void  removeAdvertisementFromSocialMediaUser(SocialMediaUser socialMediaUser, Advertisement advertisement){
@@ -59,5 +80,45 @@ public class SocialMediaUserService {
         } else {
             // raise exception here
         }
+    }
+
+    public SocialMediaUserDTO toDTO(SocialMediaUser user) {
+
+        List<AdvertisementDTO> toBeShown = user.getAdvertisementsToBeShown()
+                .stream().map(advertisementService::toDTO)
+                .collect(Collectors.toList());
+
+        List<SocialMediaPageDTO> pages = user.getLikedSocialMediaPages()
+                .stream().map(pageDTO::toDTO)
+                .collect(Collectors.toList());
+
+        return SocialMediaUserDTO.builder()
+                .id(user.getId())
+                .age(user.getAge())
+                .city(user.getCity())
+                .country(user.getCountry())
+                .advertisementsToBeShown(toBeShown)
+                .likedSocialMediaPages(pages)
+                .build();
+    }
+
+    public SocialMediaUser toEntity(SocialMediaUserDTO dto) {
+
+        List<Advertisement> toBeShown = dto.getAdvertisementsToBeShown()
+                .stream().map(advertisementService::toEntity)
+                .collect(Collectors.toList());
+
+        List<SocialMediaPage> pages = dto.getLikedSocialMediaPages()
+                .stream().map(pageDTO::toEntity)
+                .collect(Collectors.toList());
+
+        return SocialMediaUser.builder()
+                .id(dto.getId())
+                .age(dto.getAge())
+                .city(dto.getCity())
+                .country(dto.getCountry())
+                .advertisementsToBeShown(toBeShown)
+                .likedSocialMediaPages(pages)
+                .build();
     }
 }

@@ -3,7 +3,7 @@ package rules.advertisement;
 import com.sbnz.adsys.model.*;
 import com.sbnz.adsys.event.*;
 
-global com.sbnz.adsys.sevice.SocialMediaUserService socialMediaUserService;
+global com.sbnz.adsys.service.SocialMediaUserService socialMediaUserService;
 
 
 rule "Ad has been seen"

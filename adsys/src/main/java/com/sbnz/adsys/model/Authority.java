@@ -1,6 +1,7 @@
 package com.sbnz.adsys.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,6 +13,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name="authority")
+@Builder
 public class Authority implements GrantedAuthority {
 
 	private static final long serialVersionUID = 1L;

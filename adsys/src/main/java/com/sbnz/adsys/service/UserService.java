@@ -1,4 +1,4 @@
-package com.sbnz.adsys.sevice;
+package com.sbnz.adsys.service;
 
 import com.sbnz.adsys.model.User;
 import com.sbnz.adsys.repository.UserRepository;

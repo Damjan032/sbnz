@@ -1,15 +1,13 @@
 package com.sbnz.adsys.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class TagDTO {
     Long id;
-    private String tag;
+    private String value;
 }

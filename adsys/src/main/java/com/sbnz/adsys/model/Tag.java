@@ -1,9 +1,6 @@
 package com.sbnz.adsys.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -14,20 +11,25 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Builder
 public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @NotNull
-    private String tag;
+    private String value;
+
+    public Tag(String value) {
+        this.value = value;
+    }
 
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         } else if (obj instanceof Tag) {
-            return this.tag.equals(((Tag) obj).getTag());
+            return this.value.equals(((Tag) obj).getValue());
         }
         return false;
     }

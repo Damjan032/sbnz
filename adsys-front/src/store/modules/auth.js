@@ -32,7 +32,6 @@ const actions = {
       localStorage.setItem("token", JSON.stringify(data.token));
       commit("setLoggedUser", data);
 
-
       router.push("/");
     } catch (e) {
       console.log(e);

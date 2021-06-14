@@ -1,23 +1,31 @@
 package com.sbnz.adsys.dto;
 
 import com.sbnz.adsys.model.Tag;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class AdvertisementDTO {
     private Long id;
+
+    @NotBlank
     private String title;
+
+    @NotBlank
     private String content;
+
+    @NotBlank
     private String targetUrl;
+
     private List<String> tags;
-    private double budget;
+
+    @NotNull
     private AdvertiserDTO advertiser;
 }

@@ -1,8 +1,7 @@
 package com.sbnz.adsys.controller;
 
 import com.sbnz.adsys.dto.LoginDTO;
-import com.sbnz.adsys.sevice.AuthService;
-import com.sbnz.adsys.sevice.UserService;
+import com.sbnz.adsys.service.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

@@ -1,7 +1,7 @@
 package com.sbnz.adsys.controller;
 
 import com.sbnz.adsys.dto.AdvertiserDTO;
-import com.sbnz.adsys.sevice.AdvertiserService;
+import com.sbnz.adsys.service.AdvertiserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

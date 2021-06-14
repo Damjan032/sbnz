@@ -1,6 +1,5 @@
-package com.sbnz.adsys.sevice;
+package com.sbnz.adsys.service;
 
-import com.sbnz.adsys.dto.AdvertisementDTO;
 import com.sbnz.adsys.dto.AdvertiserDTO;
 import com.sbnz.adsys.model.Advertiser;
 import com.sbnz.adsys.repository.AdvertiserRepository;

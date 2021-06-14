@@ -1,9 +1,6 @@
 package com.sbnz.adsys.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -14,12 +11,13 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Builder
 public class Advertiser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    
-    @NotNull
+
+    @Column(unique = true, nullable = false)
     private String name;
     
     @OneToMany(mappedBy="advertiser")

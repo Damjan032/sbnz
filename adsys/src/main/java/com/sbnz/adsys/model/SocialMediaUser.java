@@ -1,9 +1,6 @@
 package com.sbnz.adsys.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -14,23 +11,20 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Builder
 public class SocialMediaUser{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     
-    @NotNull
     private int age;
     
     @OneToOne
     private User user;
     
-    @NotNull
     private String country;
     
-    @NotNull
     private String city;
-    
     
     @ManyToMany(mappedBy = "usersWhoLikeThePage")
     private List<SocialMediaPage> likedSocialMediaPages;
