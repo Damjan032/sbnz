@@ -1,30 +1,25 @@
 <template>
   <v-app>
-    <drawer v-if="isSuperAdmin" :mini="miniDrawer" @miniVariant="miniDrawer = !miniDrawer"/>
+    <left-sidebar/>
+    <!-- <right-sidebar class="hidden-lg-and-down" /> -->
     <nav-bar />
     <v-main class="content">
-      <router-view/>
+      <!-- <v-container fluid class="pa-0"> -->
+        <router-view />
+      <!-- </v-container> -->
     </v-main>
   </v-app>
 </template>
 
 <script>
 import NavBar from "../components/NavBar";
-import Drawer from "../components/Drawer";
+// import RightSidebar from "../components/global/RightSidebar.vue";
+import LeftSidebar from "../components/global/LeftSidebar.vue";
 
 export default {
   name: "Main",
-  components: {Drawer, NavBar},
-  data: () => ({
-    miniDrawer: true,
-  }),
-  methods: {
-    isSuperAdmin : function() {
-      console.log(this.$store.state.auth.authorities)
-      return false
-    }
-  }
-}
+  components: { LeftSidebar, NavBar },
+};
 </script>
 
 <style scoped>

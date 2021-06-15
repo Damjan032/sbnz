@@ -24,6 +24,12 @@ public class SocialMediaPageService {
     @Autowired
     private final TagService tagService;
 
+    public List<SocialMediaPageDTO> findAll() {
+        return pageRepository.findAll()
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
 
     public SocialMediaPageDTO toDTO(SocialMediaPage page) {
         List<String> keywords = page.getCategoryKeywords().stream()
@@ -32,6 +38,7 @@ public class SocialMediaPageService {
 
         return SocialMediaPageDTO.builder()
                 .id(page.getId())
+                .picture(page.getPicture())
                 .name(page.getName())
                 .categoryKeywords(keywords)
                 .build();
@@ -45,6 +52,7 @@ public class SocialMediaPageService {
         return SocialMediaPage.builder()
                 .id(dto.getId())
                 .name(dto.getName())
+                .picture(dto.getPicture())
                 .categoryKeywords(tags)
                 .build();
     }

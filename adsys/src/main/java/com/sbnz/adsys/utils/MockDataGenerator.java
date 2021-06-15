@@ -48,6 +48,11 @@ public class MockDataGenerator {
         this.random = new Random();
     }
 
+    public void test() {
+        System.out.println(faker.avatar().image());
+        System.out.println(faker.internet().image());
+    }
+
     public void generateData() {
         System.out.println("Purging database...");
         purgeDatabase();
@@ -151,6 +156,19 @@ public class MockDataGenerator {
     private void generateUsers() {
         UserRepository repository = context.getBean(UserRepository.class);
 
+        // generate one admin
+        List<Authority> adminAuthority = new LinkedList<>();
+        adminAuthority.add(authorityMap.get("admin"));
+        User admin = User.builder()
+                .firstName("admin")
+                .lastName("admin")
+                .email("admin")
+                .password("123")
+                .authorities(adminAuthority)
+                .enabled(true)
+                .build();
+        repository.save(admin);
+
         for (int i = 0; i < USER_COUNT; i++) {
             while (true) {
                 List<Authority> authorities = new LinkedList<>();
@@ -216,9 +234,9 @@ public class MockDataGenerator {
     }
 
     private void purgeDatabase() {
-        Class[] classes = {AdvertisementRepository.class, AdvertisementRequestRepository.class,
-                AdvertiserRepository.class, EventRepository.class, SocialMediaPageRepository.class,
-                SocialMediaUserRepository.class, TagRepository.class, UserRepository.class};
+        Class[] classes = {AdvertiserRepository.class, AdvertisementRepository.class, TagRepository.class,
+                AdvertisementRequestRepository.class, EventRepository.class, SocialMediaPageRepository.class,
+                SocialMediaUserRepository.class, UserRepository.class};
 
         for (Class oneClass : classes) {
             JpaRepository<Object, Long> repo = (JpaRepository<Object, Long>) context.getBean(oneClass);

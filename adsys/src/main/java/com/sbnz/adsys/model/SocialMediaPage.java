@@ -19,6 +19,8 @@ public class SocialMediaPage {
 
     private String name;
 
+    private String picture;
+
     @ManyToMany
     private List<Tag> categoryKeywords;
     

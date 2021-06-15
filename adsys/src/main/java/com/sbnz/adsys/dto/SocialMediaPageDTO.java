@@ -18,5 +18,7 @@ public class SocialMediaPageDTO {
     @NotBlank
     private String name;
 
+    private String picture;
+
     private List<String> categoryKeywords;
 }

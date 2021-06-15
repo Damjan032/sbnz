@@ -1,11 +1,9 @@
 import Home from "../pages/Home";
-import {homePath} from "@/utils/paths";
-
 
 
 const loggedRoutes = [
   {
-    path: homePath,
+    path: '/',
     component: Home,
   },
 

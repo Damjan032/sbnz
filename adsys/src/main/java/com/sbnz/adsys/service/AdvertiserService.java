@@ -29,14 +29,19 @@ public class AdvertiserService {
     }
 
     public AdvertiserDTO toDTO(Advertiser advertiser) {
-        return new AdvertiserDTO(advertiser.getId(), advertiser.getName());
+        return AdvertiserDTO.builder()
+                .id(advertiser.getId())
+                .name(advertiser.getName())
+                .picture(advertiser.getPicture())
+                .build();
     }
 
-    public Advertiser toEntity(AdvertiserDTO advertiserDTO){
-        Advertiser advertiser = new Advertiser();
-        advertiser.setId(advertiserDTO.getId());
-        advertiser.setName(advertiserDTO.getName());
-        return advertiser;
+    public Advertiser toEntity(AdvertiserDTO advertiserDTO) {
+        return Advertiser.builder()
+                .id(advertiserDTO.getId())
+                .name(advertiserDTO.getName())
+                .picture(advertiserDTO.getPicture())
+                .build();
     }
 
 }

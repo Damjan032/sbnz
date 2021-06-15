@@ -19,6 +19,8 @@ public class Advertiser {
 
     @Column(unique = true, nullable = false)
     private String name;
+
+    private String picture;
     
     @OneToMany(mappedBy="advertiser")
     private List<Advertisement> advertisements;
