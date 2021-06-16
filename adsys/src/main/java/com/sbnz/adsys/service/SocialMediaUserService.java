@@ -1,6 +1,7 @@
 package com.sbnz.adsys.service;
 
 import com.sbnz.adsys.dto.AdvertisementDTO;
+import com.sbnz.adsys.dto.AdvertiserDTO;
 import com.sbnz.adsys.dto.SocialMediaPageDTO;
 import com.sbnz.adsys.dto.SocialMediaUserDTO;
 import com.sbnz.adsys.model.Advertisement;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,8 +33,12 @@ public class SocialMediaUserService {
     @Autowired
     private SocialMediaPageService pageDTO;
 
-    public void create() {
+    public List<SocialMediaUserDTO> findAll() {
+        return socialMediaUserRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
+    }
 
+    public List<SocialMediaUser> findAllEntity() {
+        return new ArrayList<>(socialMediaUserRepository.findAll());
     }
 
     @Transactional
@@ -94,6 +100,7 @@ public class SocialMediaUserService {
 
         return SocialMediaUserDTO.builder()
                 .id(user.getId())
+                .user(user.getUser())
                 .age(user.getAge())
                 .city(user.getCity())
                 .country(user.getCountry())

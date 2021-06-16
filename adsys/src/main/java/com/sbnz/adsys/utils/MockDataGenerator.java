@@ -1,19 +1,13 @@
 package com.sbnz.adsys.utils;
 
 import com.github.javafaker.Faker;
-import com.sbnz.adsys.Application;
-import com.sbnz.adsys.dto.SocialMediaUserDTO;
 import com.sbnz.adsys.model.*;
 import com.sbnz.adsys.repository.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
-import java.time.Month;
-import java.time.ZoneId;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 public class MockDataGenerator {
 
@@ -101,7 +95,10 @@ public class MockDataGenerator {
         for (int i = 0; i < ADVERTISER_COUNT; i++) {
             while (true) {
                 try {
-                    Advertiser advertiser = Advertiser.builder().name(faker.company().name()).build();
+                    Advertiser advertiser = Advertiser.builder()
+                            .name(faker.company().name())
+                            .picture(faker.avatar().image())
+                            .build();
                     advertisers.add(repository.save(advertiser));
                     break;
                 } catch (Exception ignored) {
@@ -159,17 +156,18 @@ public class MockDataGenerator {
         // generate one admin
         List<Authority> adminAuthority = new LinkedList<>();
         adminAuthority.add(authorityMap.get("admin"));
+        adminAuthority.add(authorityMap.get("user"));
         User admin = User.builder()
                 .firstName("admin")
                 .lastName("admin")
-                .email("admin")
+                .email("admin_1")
                 .password("123")
                 .authorities(adminAuthority)
                 .enabled(true)
                 .build();
-        repository.save(admin);
+        users.add(repository.save(admin));
 
-        for (int i = 0; i < USER_COUNT; i++) {
+        for (int i = 1; i < USER_COUNT + 1; i++) {
             while (true) {
                 List<Authority> authorities = new LinkedList<>();
                 authorities.add(authorityMap.get("user"));
@@ -177,7 +175,7 @@ public class MockDataGenerator {
                     User user = User.builder()
                             .firstName(faker.name().firstName())
                             .lastName(faker.name().lastName())
-                            .email("email" + i)
+                            .email("email_" + i)
                             .password("123")
                             .authorities(authorities)
                             .enabled(true)

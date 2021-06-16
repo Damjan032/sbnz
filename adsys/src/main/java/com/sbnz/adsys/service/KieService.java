@@ -29,6 +29,10 @@ public class KieService {
         ks.getAgenda().getAgendaGroup(agendaGroup).setFocus();
         return ks;
     }
+
+    public KieSession getSession(String sessionName) {
+        return this.kieContainer.newKieSession(sessionName);
+    }
     
     public void runSession(KieSession kieSession) {
         kieSession.fireAllRules();

@@ -2,8 +2,8 @@ package com.sbnz.adsys.service;
 
 import com.sbnz.adsys.dto.AdvertisementDTO;
 import com.sbnz.adsys.model.Advertisement;
-import com.sbnz.adsys.model.Advertiser;
 import com.sbnz.adsys.model.Tag;
+import com.sbnz.adsys.repository.AdvertisementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +15,17 @@ import java.util.stream.Collectors;
 public class AdvertisementService {
 
     @Autowired
-    AdvertiserService advertiserService;
+    private AdvertisementRepository advertisementRepository;
 
     @Autowired
-    TagService tagService;
+    private AdvertiserService advertiserService;
+
+    @Autowired
+    private TagService tagService;
+
+    public Advertisement save(Advertisement advertisement) {
+        return advertisementRepository.save(advertisement);
+    }
 
     public AdvertisementDTO toDTO(Advertisement advertisement) {
         List<String> tags = advertisement.getTags().stream()

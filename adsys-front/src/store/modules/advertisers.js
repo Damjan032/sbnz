@@ -13,7 +13,7 @@ const mutations = {
 const actions = {
   async getAdvertisersAction({ commit }) {
     try {
-      const { data } = await axios.post("/api/advertisers");
+      const { data } = await axios.get("/api/advertisers");
       commit("setAdvertisers", data);
     } catch (e) {
       console.log(e);

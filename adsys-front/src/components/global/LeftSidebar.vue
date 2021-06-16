@@ -102,7 +102,7 @@ export default {
 <style lang="scss" scoped>
 .left-side-bar {
   margin-top: 64px;
-  min-width: 300px !important;
+  min-width: 350px !important;
   background-color: #18191a !important;
 }
 

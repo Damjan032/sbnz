@@ -18,8 +18,8 @@ public class AdvertiserController {
     private AdvertiserService advertiserService;
 
     @GetMapping
-    public ResponseEntity<List<AdvertiserDTO>> get() {
-        List<AdvertiserDTO> advertiserDTOS = advertiserService.get();
+    public ResponseEntity<List<AdvertiserDTO>> findAll() {
+        List<AdvertiserDTO> advertiserDTOS = advertiserService.findAll();
         return new ResponseEntity<>(advertiserDTOS, HttpStatus.OK);
     }
 

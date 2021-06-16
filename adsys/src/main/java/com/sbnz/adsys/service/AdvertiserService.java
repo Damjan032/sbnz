@@ -15,7 +15,7 @@ public class AdvertiserService {
     @Autowired
     private AdvertiserRepository advertiserRepository;
 
-    public List<AdvertiserDTO> get() {
+    public List<AdvertiserDTO> findAll() {
         return advertiserRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
     }
 

@@ -24,7 +24,7 @@ lock-on-active
         $req: AdvertisementRequest($min: minAge, $max: maxAge)
         $c : Candidate(user.age >= $min, user.age <= $max)
     then
-        System.out.println("Candidate with name: " + $c.getUser().fullName() + " satisfies the age condition");
+//        System.out.println("Candidate with name: " + $c.getUser().fullName() + " satisfies the age condition");
         modify ($c) {setAgeGroup(true)}
 end
 
@@ -35,7 +35,7 @@ lock-on-active
         $req: AdvertisementRequest($query: geographicLocation)
         $c: Candidate(user.fullLocation.contains($query))
     then
-        System.out.println("Candidate with name: " + $c.getUser().fullName() + " satisfies the geography condition");
+//        System.out.println("Candidate with name: " + $c.getUser().fullName() + " satisfies the geography condition");
         modify ($c) {setGeographyGroup(true)}
 end
 
@@ -44,7 +44,7 @@ rule "Is Target Group" salience 9
     when
         $c: Candidate(ageGroup && geographyGroup) @Watch(ageGroup, geographyGroup)
     then
-        System.out.println("Candidate with name: " + $c.getUser().fullName() + " does belong to ad target group!");
+//        System.out.println("Candidate with name: " + $c.getUser().fullName() + " does belong to ad target group!");
         modify ($c) {setTargetGroup(true)}
 end
 
@@ -53,7 +53,7 @@ rule "Is Not Target Group" salience 9
     when
         $c: Candidate(!(ageGroup && geographyGroup))
     then
-        System.out.println("Candidate with name: " + $c.getUser().fullName() + " does NOT belong to ad target group!");
+//        System.out.println("Candidate with name: " + $c.getUser().fullName() + " does NOT belong to ad target group!");
 end
 
 
@@ -97,7 +97,7 @@ rule "Is In Pool" salience 6
     when
         $c: Candidate(targetGroup && !disqualified && !automaticallyQualified, $user: user)
     then
-        System.out.println("Candidate with name: " + $user.fullName() + " still in the pool");
+//        System.out.println("Candidate with name: " + $user.fullName() + " still in the pool");
 end
 
 
@@ -135,7 +135,6 @@ rule "Calculate Clicked Ads Coefficient" extends "Is In Pool" salience 5
         )
     then
         modify ($c) {setClickedAdsCoefficient($clickCoeff)}
-        System.out.println("this is gut " + $clickCoeff);
 end
 
 
@@ -155,7 +154,6 @@ rule "Calculate Ignored Ads Coefficient" extends "Is In Pool" salience 5
          )
      then
         modify ($c) {setIgnoredAdsCoefficient($ignoreCoeff)}
-        System.out.println("this is nicht gut " + $ignoreCoeff);
 end
 
 
@@ -169,7 +167,6 @@ rule "Calculate Liked Pages Coefficient" extends "Is In Pool" salience 5
          )
      then
         modify ($c) {setLikedPagesCoefficient($pageCoeff)}
-        System.out.println("pages " + $pageCoeff);
 end
 
 
@@ -181,7 +178,6 @@ rule "Calculate Initial Score" extends "Is In Pool" salience 4
             $c.getIgnoredAdsCoefficient() * IGNORED_ADS_COEFFICIENT +
             $c.getLikedPagesCoefficient() * LIKED_PAGES_COEFFICIENT;
 
-        System.out.println("initial " + $c.getUser().getEmail() + " " + score);
         modify ($c) {setInitialScore(score)}
 end
 
@@ -195,7 +191,6 @@ rule "Calculate Herd Coefficient" extends "Is In Pool" salience 3
             average($candidateScore)
         )
     then
-        System.out.println("herd " + $c.getUser().getEmail() + " " + $herdCoeff);
         modify ($c) {setHerdCoefficient($herdCoeff)}
 end
 
@@ -204,7 +199,6 @@ rule "Add Herd Coefficient to Final Score" extends "Is In Pool" salience 2
     when
     then
         double finalScore = $c.getInitialScore() + HERD_COEFFICIENT * $c.getHerdCoefficient();
-        System.out.println("final " + $c.getUser().getEmail() + " " + finalScore);
         modify ($c) {setFinalScore(finalScore)}
 end
 

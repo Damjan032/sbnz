@@ -29,6 +29,7 @@
             dark
             v-model="request.advertisement.tags"
             :items="tags"
+            item-text="value"
             label="Tags"
             multiple
             chips
@@ -84,7 +85,7 @@
 </template>
 
 <script>
-// import { mapGetters, mapActions, mapMutations } from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
   components: {},
@@ -112,26 +113,24 @@ export default {
           advertiser: null,
         },
       },
-      advertisers: [{ name: "Google" }, { name: "Facebook" }],
-      tags: [
-        "sport",
-        "weather",
-        "media",
-        "technology",
-        "western",
-        "movie",
-        "etc",
-      ],
+      // advertisers: [{ name: "Google" }, { name: "Facebook" }],
+      // tags: [
+      //   "sport",
+      //   "weather",
+      //   "media",
+      //   "technology",
+      //   "western",
+      //   "movie",
+      //   "etc",
+      // ],
     };
   },
 
   computed: {
-    // ...mapGetters({
-    //   hintsMovement: "paintings/getHintsMovement",
-    //   artMovements: "paintings/getArtMovements",
-    //   artists: "artists/getArtists",
-    //   getAllArtists: "artists/getAllArtists",
-    // }),
+    ...mapGetters({
+      advertisers: "advertisers/getAdvertisers",
+      tags: "tags/getTags",
+    }),
 
     show: {
       get() {

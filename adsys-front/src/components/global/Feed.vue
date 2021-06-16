@@ -27,7 +27,7 @@
               v-for="item in statusActions"
               :key="item.name"
             >
-              <v-icon class="mr-2" :color="item.color">mdi-camera</v-icon>
+              <v-icon class="mr-2" :color="item.color">{{ item.icon }}</v-icon>
               {{ item.name }}
             </v-col>
           </v-row>
@@ -47,16 +47,22 @@
 
 <script>
 import FeedItem from "./FeedItem.vue";
+import { mapActions } from "vuex";
 
 export default {
   components: { FeedItem },
+
+  async created() {
+    await this.getAdvertisersAction();
+    await this.getTagsAction();
+  },
 
   data() {
     return {
       statusActions: [
         { name: "Live video", icon: "mdi-camera", color: "red" },
         {
-          name: "Photo/Vide",
+          name: "Photo/Video",
           icon: "mdi-image-multiple-outline",
           color: "green",
         },
@@ -75,6 +81,13 @@ export default {
         },
       ],
     };
+  },
+
+  methods: {
+    ...mapActions({
+      getAdvertisersAction: "advertisers/getAdvertisersAction",
+      getTagsAction: "tags/getTagsAction",
+    }),
   },
 };
 </script>

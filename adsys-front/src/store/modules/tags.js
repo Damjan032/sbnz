@@ -13,7 +13,7 @@ const mutations = {
 const actions = {
   async getTagsAction({ commit }) {
     try {
-      const { data } = await axios.post("/api/tags");
+      const { data } = await axios.get("/api/tags");
       commit("setTags", data);
     } catch (e) {
       console.log(e);
