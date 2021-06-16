@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer class="right-side-bar" fixed permanent right dark>
+  <v-navigation-drawer class="right-side-bar" fixed right dark app>
     <template v-slot:prepend>
       <v-list-item two-line>
         <v-list-item-avatar>

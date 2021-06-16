@@ -1,21 +1,20 @@
 <template>
   <v-navigation-drawer
     class="left-side-bar"
-    permanent
     fixed
     dark
     app
   >
     <template v-slot:prepend>
       <v-list dense>
-        <div class="side-card mx-2 my-1">
+        <div class="side-card hoverable mx-2 my-1">
           <v-list-item class="px-3">
             <v-list-item-avatar>
               <img src="https://randomuser.me/api/portraits/women/81.jpg" />
             </v-list-item-avatar>
 
             <v-list-item-content>
-              <v-list-item-title>Jane Smith</v-list-item-title>
+              <v-list-item-title class="subtitle-1">Jane Smith</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </div>
@@ -23,7 +22,7 @@
         <div
           v-for="item in items"
           :key="item.title"
-          class="side-card mx-2 my-1"
+          class="side-card hoverable mx-2 my-1"
         >
           <v-list-item class="px-3">
             <v-list-item-avatar>
@@ -35,7 +34,7 @@
             </v-list-item-avatar>
 
             <v-list-item-content>
-              <v-list-item-title>{{ item.title }}</v-list-item-title>
+              <v-list-item-title class="subtitle-1">{{ item.title }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </div>
@@ -111,10 +110,5 @@ export default {
   background-color: transparent;
   border: none !important;
   border-radius: 8px;
-}
-
-.side-card:hover {
-  cursor: pointer;
-  background-color: gray;
 }
 </style>

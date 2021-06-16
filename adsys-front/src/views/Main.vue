@@ -1,12 +1,12 @@
 <template>
   <v-app>
-    <left-sidebar/>
+    <left-sidebar class="hidden-md-and-down" />
     <!-- <right-sidebar class="hidden-lg-and-down" /> -->
     <nav-bar />
     <v-main class="content">
-      <!-- <v-container fluid class="pa-0"> -->
+      <v-container fluid class="pa-0">
         <router-view />
-      <!-- </v-container> -->
+      </v-container>
     </v-main>
   </v-app>
 </template>
@@ -22,8 +22,14 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .content {
   background-color: #f0f0f0;
+}
+
+.hoverable:hover {
+  background-color: #2B2C2D;
+  cursor: pointer;
+  border-radius: 7px;
 }
 </style>

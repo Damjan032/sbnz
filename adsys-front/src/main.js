@@ -6,9 +6,11 @@ import vuetify from "./plugins/vuetify";
 import Axios from "axios";
 import VueAxios from "vue-axios";
 
+
 Vue.use(VueAxios, Axios);
 Vue.axios.defaults.baseURL = "http://localhost:8088";
 
+export const bus = new Vue();
 
 
 Vue.config.productionTip = false;

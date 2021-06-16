@@ -15,7 +15,6 @@ import java.util.List;
 public class AdvertisementDTO {
     private Long id;
 
-    @NotBlank
     private String title;
 
     @NotBlank

@@ -1,7 +1,7 @@
 <template>
   <v-app-bar class="navigation py-0" flat dark fixed>
     <v-row class="px-2 py-0" align="center">
-      <v-col cols="2" class="px-0">
+      <v-col cols="4" class="px-0">
         <div class="fb-img">
           <svg
             viewBox="0 0 36 36"
@@ -43,44 +43,51 @@
         </div>
       </v-col>
 
-      <v-col cols="8" align="center">
+      <v-col cols="4" align="center">
         <v-row justify="center">
-          <div class="toolbar-btn">
+          <div class="toolbar-btn hoverable">
             <v-icon :color="currentPath('/')" large>mdi-home</v-icon>
           </div>
 
-          <div class="toolbar-btn">
+          <div class="toolbar-btn hoverable">
             <v-icon :color="currentPath('/pages')" large>mdi-flag</v-icon>
           </div>
 
-          <div class="toolbar-btn">
+          <div class="toolbar-btn hoverable">
             <v-icon :color="currentPath('/admin')" large>mdi-map-plus</v-icon>
           </div>
         </v-row>
       </v-col>
 
-      <v-col cols="2" align="end">
-        <avatar-menu :menu-active="menuActive"> </avatar-menu>
+      <v-col cols="4" align="end">
+        <span class="py-2 pr-4 pl-1 hoverable profile-hov">
+          <v-avatar class="mr-2" dark height="28px" width="28px">
+            <img src="https://randomuser.me/api/portraits/women/81.jpg" />
+          </v-avatar>
+          <span class="body 2">Stefan</span>
+        </span>
+        <create-menu />
+        <dropdown-menu />
       </v-col>
     </v-row>
   </v-app-bar>
 </template>
 
 <script>
-import AvatarMenu from "./Auth/AvatarMenu";
+import CreateMenu from "./admin/CreateMenu.vue";
+import DropdownMenu from "./global/DropdownMenu.vue";
 
 export default {
   name: "NavBar",
-  components: { AvatarMenu },
+  components: { CreateMenu, DropdownMenu },
   data: () => ({
     menuActive: false,
   }),
 
   methods: {
     currentPath(current) {
-      if (current === window.location.pathname)
-        return 'blue';
-      return 'white'
+      if (current === window.location.pathname) return "blue";
+      return "white";
     },
   },
 };
@@ -101,8 +108,13 @@ export default {
   // margin-right: 20px;
 }
 
-.toolbar-btn:hover {
-  background-color: gray;
+.hoverable:hover {
   cursor: pointer;
+  background-color: #393a3b;
+  border-radius: 7px;
+}
+
+.profile-hov {
+  border-radius: 20px !important;
 }
 </style>
