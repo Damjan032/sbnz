@@ -10,12 +10,13 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 import static org.junit.Assert.*;
 
 @DroolsSession(resources = {
-        "classpath*:/sbnz/integracija/Sample.drl"},
+        "classpath*:/rules/recommendation.drl"},
         ignoreRules = {"before", "after"},
         keepFactsHistory = false,
         logResources = true)

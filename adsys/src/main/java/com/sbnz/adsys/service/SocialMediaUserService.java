@@ -1,5 +1,6 @@
 package com.sbnz.adsys.service;
 
+import com.google.common.collect.Sets;
 import com.sbnz.adsys.dto.AdvertisementDTO;
 import com.sbnz.adsys.dto.AdvertiserDTO;
 import com.sbnz.adsys.dto.SocialMediaPageDTO;
@@ -32,6 +33,10 @@ public class SocialMediaUserService {
 
     @Autowired
     private SocialMediaPageService pageDTO;
+
+    public SocialMediaUser save(SocialMediaUser user) {
+        return socialMediaUserRepository.save(user);
+    }
 
     public List<SocialMediaUserDTO> findAll() {
         return socialMediaUserRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());

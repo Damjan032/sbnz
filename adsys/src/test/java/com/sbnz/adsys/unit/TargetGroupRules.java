@@ -17,7 +17,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @DroolsSession(resources = {
-        "classpath*:/sbnz/integracija/Sample.drl"},
+        "classpath*:/rules/recommendation.drl"},
         ignoreRules = {"before", "after"},
         keepFactsHistory = false,
         logResources = true)

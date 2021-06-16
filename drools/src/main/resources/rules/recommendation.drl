@@ -1,4 +1,4 @@
-package sbnz.integracija;
+package rules;
 
 import com.sbnz.adsys.utils.Constants;
 import java.time.LocalDate;
@@ -67,7 +67,7 @@ rule "5+ Ads Ignored this Month by the Same Company" salience 8
         )
     then
         System.out.println("Candidate: " + $c.getUser().fullName() + " has ignored 5+ ads by "
-        + $currentAdvertiser.getName() + " and he is eliminated from the candidate pool!");
+        + $currentAdvertiser.getName() + " and he's eliminated from the candidate pool!");
         modify ($c){setDisqualified(true)}
 end
 
@@ -85,7 +85,7 @@ rule "5+ Ads Clicked on this Month by the Same Company" salience 7
         )
     then
         System.out.println("Candidate: " + $c.getUser().fullName() + " has clicked on 5+ ads by "
-        + $currentAdvertiser.getName() + " and he will be automatically qualified!");
+        + $currentAdvertiser.getName() + " and he will be automatically qualifed!");
         modify ($c) {setAutomaticallyQualified(true)}
 end
 
@@ -94,7 +94,6 @@ rule "Is In Pool" salience 6
     when
         $c: Candidate(targetGroup && !disqualified && !automaticallyQualified, $user: user)
     then
-//        System.out.println("Candidate with name: " + $user.fullName() + " still in the pool");
 end
 
 

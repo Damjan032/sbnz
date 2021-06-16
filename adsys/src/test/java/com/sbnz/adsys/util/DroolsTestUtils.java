@@ -5,10 +5,7 @@ import org.checkerframework.checker.units.qual.A;
 import org.drools.core.util.ClassUtilsTest;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class DroolsTestUtils {
 

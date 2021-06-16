@@ -4,26 +4,28 @@ import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Builder
-public class AdvertisementDTO {
-    private Long id;
-
-    private String title;
+public class BasicUserInfoDTO {
+    @NotBlank
+    private String firstName;
 
     @NotBlank
-    private String content;
+    private String lastName;
 
     @NotBlank
-    private String targetUrl;
-
-    private List<String> tags;
+    private String email;
 
     @NotNull
-    private AdvertiserDTO advertiser;
+    private int age;
+
+    @NotBlank
+    private String city;
+
+    @NotBlank
+    private String country;
 }

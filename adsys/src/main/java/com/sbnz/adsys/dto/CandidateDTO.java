@@ -8,7 +8,7 @@ import lombok.*;
 @Setter
 @Builder
 public class CandidateDTO {
-    private SocialMediaUserDTO user;
+    private BasicUserInfoDTO user;
 
     private boolean isAgeGroup, isGeographyGroup;
     private boolean isTargetGroup;
