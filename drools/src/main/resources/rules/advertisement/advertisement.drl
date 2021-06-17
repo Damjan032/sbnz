@@ -30,14 +30,14 @@ end
 rule "Ad has not been clicked for more than 10 mins"
     when
        $adEvent : AdvertisementViewEvent($ad: advertisement, $user: socialMediaUser)
-       $aie: AdvertisementIgnoredEvent (advertisement.getId() == $ad.getId(),
+       not ( AdvertisementClickEvent (advertisement.getId() == $ad.getId(),
         socialMediaUser.getUser().getId() == $user.getUser().getId(),
-       this after[10m,60m] $adEvent )
+       this after[0s,10m] $adEvent ))
     then
+        socialMediaUserService.adIgnoredByUser($ad, $user);
         System.out.println("NIJE KLIKNUTA U ZADNJIJA 10 min");
         delete($adEvent);
-        delete($aie);
-        socialMediaUserService.adIgnoredByUser($ad, $user);
+
 end
 
 rule "Ad was clicked for more than 10 times in the last 10min"

@@ -17,4 +17,10 @@ public class RestExceptionHandler {
                 HttpStatus.UNAUTHORIZED);
     }
     
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ErrorMessages> processBadRequestException(BadRequestException ex) {
+        return new ResponseEntity<>(ex.getErrorMessages(),
+                HttpStatus.UNAUTHORIZED);
+    }
+    
 }

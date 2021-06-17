@@ -1,5 +1,4 @@
 package com.sbnz.adsys.controller;
-
 import com.sbnz.adsys.dto.AdvertisementDTO;
 import com.sbnz.adsys.dto.AdvertiserDTO;
 import com.sbnz.adsys.service.AdvertisementService;
@@ -9,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.List;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,6 +26,12 @@ public class AdvertisementController {
         } catch (Exception e) {
             return ResponseEntity.ok(new LinkedList<>());
         }
+    }
+  
+    @PostMapping("/seenAdvertisement/{id}")
+    public ResponseEntity<Boolean> adHasBeenSeen(@PathVariable long id, @RequestBody SocialMediaUserDTO socialMediaUserDTO) {
+        System.out.println("AdHasBeenSeen");
+        return ResponseEntity.ok(advertisementService.advertisementHasBeeSeen(id, socialMediaUserDTO));
     }
 
 
