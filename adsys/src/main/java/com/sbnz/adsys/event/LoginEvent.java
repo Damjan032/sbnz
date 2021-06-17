@@ -10,7 +10,7 @@ import java.util.Date;
 
 @Role(Role.Type.EVENT)
 @Timestamp("executionTime")
-@Expires("5m")
+@Expires("30s")
 @Data
 @AllArgsConstructor
 public class LoginEvent {

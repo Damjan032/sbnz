@@ -27,13 +27,8 @@ public class AuthService {
     public AuthTokenDto login(LoginDTO loginDTO) {
         KieSession loginSession = kieService.getLoginSession();
         Optional<User> user = userRepository.findByEmail(loginDTO.getEmail());
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword());
         if (!user.isPresent()) return null;
-        try {
-            if (!user.get().getPassword().equals(loginDTO.getPassword())){
-              throw new Exception();
-            }
-        } catch (Exception e) {
+        if (!user.get().getPassword().equals(loginDTO.getPassword()) || !user.get().isEnabled()){
             LoginEvent loginEvent = new LoginEvent(new Date(), user.get(), false);
             loginSession.insert(loginEvent);
             loginSession.fireAllRules();
@@ -44,10 +39,6 @@ public class AuthService {
             }
             throw new AuthException("Wrong password");
         }
-        LoginEvent loginEvent = new LoginEvent(new Date(), user.get(), true);
-        loginSession.insert(loginEvent);
-        loginSession.fireAllRules();
-        userRepository.save(user.get());
         return new AuthTokenDto(
                 user.get().getId(),
                 user.get().getUsername(),
