@@ -22,7 +22,7 @@ public class Advertiser {
 
     private String picture;
     
-    @OneToMany(mappedBy="advertiser")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="advertiser", orphanRemoval = true)
     private List<Advertisement> advertisements;
 
     @Override

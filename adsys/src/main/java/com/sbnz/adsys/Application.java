@@ -15,7 +15,7 @@ public class Application {
 
 		// Uncomment to populate database with test data
 		// Configure by changing private constants in MockDataGenerator class
-		// new MockDataGenerator(context).generateData();
+//		 new MockDataGenerator(context).generateData();
 	}
 	
 	

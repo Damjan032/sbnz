@@ -1,20 +1,17 @@
 <template>
-  <v-navigation-drawer
-    class="left-side-bar"
-    fixed
-    dark
-    app
-  >
+  <v-navigation-drawer class="left-side-bar" fixed dark app>
     <template v-slot:prepend>
       <v-list dense>
         <div class="side-card hoverable mx-2 my-1">
           <v-list-item class="px-3">
             <v-list-item-avatar>
-              <img src="https://randomuser.me/api/portraits/women/81.jpg" />
+              <img :src="`https://randomuser.me/api/portraits/men/${user.id}.jpg`" />
             </v-list-item-avatar>
 
             <v-list-item-content>
-              <v-list-item-title class="subtitle-1">Jane Smith</v-list-item-title>
+              <v-list-item-title class="subtitle-1"
+                >{{user.firstName}} {{user.lastName}}</v-list-item-title
+              >
             </v-list-item-content>
           </v-list-item>
         </div>
@@ -34,7 +31,9 @@
             </v-list-item-avatar>
 
             <v-list-item-content>
-              <v-list-item-title class="subtitle-1">{{ item.title }}</v-list-item-title>
+              <v-list-item-title class="subtitle-1">{{
+                item.title
+              }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </div>
@@ -44,6 +43,8 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   data() {
     return {
@@ -95,6 +96,12 @@ export default {
         },
       ],
     };
+  },
+
+  computed: {
+    ...mapGetters({
+      user: "auth/getUser",
+    }),
   },
 };
 </script>

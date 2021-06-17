@@ -114,7 +114,6 @@ export default {
     postLogin() {
       this.authRequest.password = this.formElements.password;
       this.authRequest.email = this.formElements.email;
-      console.log(this.authRequest);
       this.login(this.authRequest);
     },
     checkEmail() {

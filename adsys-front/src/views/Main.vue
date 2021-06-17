@@ -27,6 +27,10 @@ export default {
   background-color: #f0f0f0;
 }
 
+.lighter-back {
+  background-color: #202324!important;
+}
+
 .hoverable:hover {
   background-color: #2B2C2D;
   cursor: pointer;
