@@ -23,14 +23,14 @@ public class AuthService {
     private final KieService kieService;
     private final UserRepository userRepository;
     private final TokenUtils tokenUtils;
-    private final AuthenticationManager authManager;
 
     public AuthTokenDTO login(LoginDTO loginDTO) {
         KieSession loginSession = kieService.getLoginSession();
-        Optional<User> user = userRepository.findByEmail(loginDTO.getEmail());
-        if (!user.isPresent()) return null;
-        if (!user.get().getPassword().equals(loginDTO.getPassword()) || !user.get().isEnabled()){
-            LoginEvent loginEvent = new LoginEvent(new Date(), user.get(), false);
+        Optional<User> optionalUser = userRepository.findByEmail(loginDTO.getEmail());
+        if (!optionalUser.isPresent()) return null;
+        User user = optionalUser.get();
+        if (!user.getPassword().equals(loginDTO.getPassword()) || !user.isEnabled()){
+            LoginEvent loginEvent = new LoginEvent(new Date(), user, false);
             loginSession.insert(loginEvent);
             loginSession.fireAllRules();
             userRepository.save(loginEvent.getUser());
@@ -40,11 +40,15 @@ public class AuthService {
             }
             throw new AuthException("Wrong password");
         }
-        return new AuthTokenDto(
-                user.get().getId(),
-                user.get().getUsername(),
-                this.tokenUtils.generateToken(user.get().getEmail()),
-                user.get().getAuthorities()
-        );
+        return AuthTokenDTO.builder()
+                .accessToken(this.tokenUtils.generateToken(user.getEmail()))
+                .authorities(user.getAuthorities())
+                .user(BasicUserInfoDTO.builder()
+                        .id(user.getId())
+                        .firstName(user.getFirstName())
+                        .lastName(user.getLastName())
+                        .email(user.getEmail())
+                        .build())
+                .build();
     }
 }

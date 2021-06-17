@@ -1,5 +1,5 @@
 <template>
-  <v-card class="card-outer py-4 px-2" :mouseover="adSeen()" dark>
+  <v-card @mouseover="onAdHover" class="card-outer py-4 px-2 lighter-back" dark>
     <v-row class="px-3">
       <v-col cols="1" align="start">
         <v-avatar>
@@ -12,7 +12,7 @@
         </v-avatar>
       </v-col>
 
-      <v-col align="start">
+      <v-col class="px-3" align="start">
         <div>
           {{ ad.advertiser.name }}
           <i
@@ -27,7 +27,7 @@
       </v-col>
 
       <v-col cols="1" align="end">
-        <v-btn icon>
+        <v-btn large icon>
           <v-icon>mdi-dots-horizontal</v-icon>
         </v-btn>
       </v-col>
@@ -37,7 +37,7 @@
         {{ ad.content }}
       </p>
     </v-row>
-    <a :click="adClicked()" :href="ad.targetUrl" target="__blank">
+    <a @click="onAdClick" :href="`http://${ad.targetUrl}`" target="__blank">
       <v-row class="px-1 pt-5">
         <v-img
           class="item-image"
@@ -63,12 +63,12 @@ export default {
   },
 
   methods: {
-    adSeen() {
-      alert('clicked');
+    onAdHover() {
+      this.$emit("viewed", this.ad.id)
     },
 
-    adClicked() {
-      alert('clicked');
+    onAdClick() {
+      this.$emit("clicked", this.ad.id);
     },
   },
 };

@@ -19,6 +19,22 @@ const actions = {
       console.log(e);
     }
   },
+
+  async advertisementSeenAction(payload) {
+    try {
+      await axios.post("/api/posts/seen/", payload);
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  async advertisementClickedAction(payload) {
+    try {
+      await axios.post("/api/posts/clicked/", payload);
+    } catch (e) {
+      console.log(e);
+    }
+  },
 };
 
 const getters = {
