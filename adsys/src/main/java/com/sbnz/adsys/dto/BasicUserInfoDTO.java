@@ -1,9 +1,9 @@
 package com.sbnz.adsys.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -11,6 +11,9 @@ import javax.validation.constraints.NotNull;
 @Setter
 @Builder
 public class BasicUserInfoDTO {
+
+    private long id;
+
     @NotBlank
     private String firstName;
 
@@ -20,12 +23,12 @@ public class BasicUserInfoDTO {
     @NotBlank
     private String email;
 
-    @NotNull
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private int age;
 
-    @NotBlank
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String city;
 
-    @NotBlank
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String country;
 }

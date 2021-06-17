@@ -2,11 +2,11 @@
   <div class="main-container">
     <v-row justify="center">
       <v-col cols="7" xl="7" lg="7" md="12" sm="12" xs="12" align="center">
-        <v-card class="py-4 px-6 mb-6" dark>
+        <v-card class="py-4 px-6 mb-12" dark>
           <v-row class="pt-6" align="start">
             <v-avatar class="mr-5">
               <img
-                src="https://randomuser.me/api/portraits/men/99.jpg"
+                :src="`https://randomuser.me/api/portraits/men/${user.id}.jpg`"
                 alt="John"
                 height="36"
                 width="36px"
@@ -14,7 +14,7 @@
             </v-avatar>
             <v-text-field
               class="pt-1"
-              placeholder="What's on your mind, Stefan?"
+              :placeholder="`What's on your mind, ${user.firstName}?`"
               filled
               rounded
               dense
@@ -34,11 +34,10 @@
         </v-card>
 
         <feed-item
-          v-for="item in items"
-          :key="item.content"
-          :image="item.image"
-          :advertiser="item.advertiser"
-          :content="item.content"
+          v-for="item in advertisements"
+          :key="item.id"
+          :ad="item"
+          class="mb-12"
         />
       </v-col>
     </v-row>
@@ -47,7 +46,7 @@
 
 <script>
 import FeedItem from "./FeedItem.vue";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   components: { FeedItem },
@@ -55,6 +54,7 @@ export default {
   async created() {
     await this.getAdvertisersAction();
     await this.getTagsAction();
+    await this.getAdsAction(this.user.id);
   },
 
   data() {
@@ -83,10 +83,18 @@ export default {
     };
   },
 
+  computed: {
+    ...mapGetters({
+      user: "auth/getUser",
+      advertisements: "advertisements/getAdvertisements"
+    }),
+  },
+
   methods: {
     ...mapActions({
       getAdvertisersAction: "advertisers/getAdvertisersAction",
       getTagsAction: "tags/getTagsAction",
+      getAdsAction: "advertisements/getAdvertisementsAction"
     }),
   },
 };

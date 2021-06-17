@@ -61,10 +61,10 @@
 
       <v-col cols="4" align="end">
         <span class="py-2 pr-4 pl-1 hoverable profile-hov">
-          <v-avatar class="mr-2" dark height="28px" width="28px">
-            <img src="https://randomuser.me/api/portraits/women/81.jpg" />
+          <v-avatar class="mr-2" dark height="30px" width="30px">
+            <img :src="`https://randomuser.me/api/portraits/men/${user.id}.jpg`" />
           </v-avatar>
-          <span class="body 2">Stefan</span>
+          <span class="body 2">{{ user.firstName }}</span>
         </span>
         <create-menu />
         <dropdown-menu />
@@ -77,12 +77,20 @@
 import CreateMenu from "./admin/CreateMenu.vue";
 import DropdownMenu from "./global/DropdownMenu.vue";
 
+import { mapGetters } from "vuex";
+
 export default {
   name: "NavBar",
   components: { CreateMenu, DropdownMenu },
   data: () => ({
     menuActive: false,
   }),
+
+  computed: {
+    ...mapGetters({
+      user: "auth/getUser",
+    }),
+  },
 
   methods: {
     currentPath(current) {

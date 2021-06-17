@@ -21,10 +21,18 @@ public class AdvertisementService {
     private AdvertiserService advertiserService;
 
     @Autowired
+    private SocialMediaUserService userService;
+
+    @Autowired
     private TagService tagService;
 
     public Advertisement save(Advertisement advertisement) {
         return advertisementRepository.save(advertisement);
+    }
+
+    public List<AdvertisementDTO> findToBeSeenByPatientId(long id){
+        return userService.findById(id)
+                .getAdvertisementsToBeShown();
     }
 
     public AdvertisementDTO toDTO(Advertisement advertisement) {

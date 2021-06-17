@@ -39,7 +39,14 @@ public class SocialMediaUserService {
     }
 
     public List<SocialMediaUserDTO> findAll() {
-        return socialMediaUserRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
+        return socialMediaUserRepository.findAll()
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public SocialMediaUserDTO findById(long id)  {
+        return toDTO(socialMediaUserRepository.findById(id).get());
     }
 
     public List<SocialMediaUser> findAllEntity() {
@@ -47,10 +54,10 @@ public class SocialMediaUserService {
     }
 
     @Transactional
-    public void  removeAdvertisementFromSocialMediaUser(SocialMediaUser socialMediaUser, Advertisement advertisement){
+    public void removeAdvertisementFromSocialMediaUser(SocialMediaUser socialMediaUser, Advertisement advertisement) {
         Optional<Advertisement> adToIgnore = socialMediaUser.getAdvertisementsToBeShown()
                 .stream().filter(ad -> ad.getId().equals(advertisement.getId())).findFirst();
-        if (adToIgnore.isPresent()){
+        if (adToIgnore.isPresent()) {
             socialMediaUser.getAdvertisementsToBeShown().remove(adToIgnore.get());
             socialMediaUser.getIgnoredAdvertisements().add(adToIgnore.get());
         }
@@ -60,7 +67,7 @@ public class SocialMediaUserService {
         System.out.println("Advertisement " + ad + " added to user's " + user + " to be viewed");
     }
 
-    public void adSeenByUser(Advertisement ad, SocialMediaUser user){
+    public void adSeenByUser(Advertisement ad, SocialMediaUser user) {
         System.out.println("User " + user + " has seen the ad: " + ad);
 
         if (user.getAdvertisementsToBeShown().contains(ad)) {
@@ -71,7 +78,7 @@ public class SocialMediaUserService {
         }
     }
 
-    public void adIgnoredByUser(Advertisement ad, SocialMediaUser user){
+    public void adIgnoredByUser(Advertisement ad, SocialMediaUser user) {
         System.out.println("User " + user + " has ignored the ad: " + ad);
 
         if (user.getSeenAdvertisements().contains(ad)) {
@@ -82,7 +89,7 @@ public class SocialMediaUserService {
         }
     }
 
-    public void adClickedByUser(Advertisement ad, SocialMediaUser user){
+    public void adClickedByUser(Advertisement ad, SocialMediaUser user) {
         System.out.println("User " + user + " has clicked the ad: " + ad);
 
         if (user.getSeenAdvertisements().contains(ad)) {

@@ -16,7 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class UserDto {
+public class UserDTO {
 
     private Long id;
 
