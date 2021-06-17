@@ -12,12 +12,10 @@ import java.time.LocalDate;
 import java.util.Date;
 
 @Role(Role.Type.EVENT)
-@Timestamp("executionTime")
 @Expires("10m")
 @Data
 @AllArgsConstructor
 public class AdvertisementViewEvent {
-    private Date executionTime;
     private SocialMediaUser socialMediaUser;
     private Advertisement advertisement;
 
