@@ -16,16 +16,12 @@ public class AdvertisementRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     
-    @NotNull
     private int minAge = 0;
     
-    @NotNull
     private int maxAge = 999;
 
-    @NotNull
     private double budget;
     
-    @NotNull
     private String geographicLocation = "";
 
     @OneToOne

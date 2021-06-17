@@ -1,5 +1,6 @@
 package com.sbnz.adsys.service;
 
+import com.google.common.collect.Sets;
 import com.sbnz.adsys.dto.AdvertisementDTO;
 import com.sbnz.adsys.dto.AdvertiserDTO;
 import com.sbnz.adsys.dto.SocialMediaPageDTO;
@@ -33,8 +34,19 @@ public class SocialMediaUserService {
     @Autowired
     private SocialMediaPageService pageDTO;
 
+    public SocialMediaUser save(SocialMediaUser user) {
+        return socialMediaUserRepository.save(user);
+    }
+
     public List<SocialMediaUserDTO> findAll() {
-        return socialMediaUserRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
+        return socialMediaUserRepository.findAll()
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public SocialMediaUserDTO findById(long id)  {
+        return toDTO(socialMediaUserRepository.findById(id).get());
     }
 
     public List<SocialMediaUser> findAllEntity() {
@@ -42,10 +54,10 @@ public class SocialMediaUserService {
     }
 
     @Transactional
-    public void  removeAdvertisementFromSocialMediaUser(SocialMediaUser socialMediaUser, Advertisement advertisement){
+    public void removeAdvertisementFromSocialMediaUser(SocialMediaUser socialMediaUser, Advertisement advertisement) {
         Optional<Advertisement> adToIgnore = socialMediaUser.getAdvertisementsToBeShown()
                 .stream().filter(ad -> ad.getId().equals(advertisement.getId())).findFirst();
-        if (adToIgnore.isPresent()){
+        if (adToIgnore.isPresent()) {
             socialMediaUser.getAdvertisementsToBeShown().remove(adToIgnore.get());
             socialMediaUser.getIgnoredAdvertisements().add(adToIgnore.get());
         }

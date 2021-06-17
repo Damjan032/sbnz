@@ -2,19 +2,19 @@
   <div class="main-container">
     <v-row justify="center">
       <v-col cols="7" xl="7" lg="7" md="12" sm="12" xs="12" align="center">
-        <v-card class="py-4 px-6 mb-6" dark>
+        <v-card class="status-card lighter-back pb-4 pt-2 px-6 mb-12" dark>
           <v-row class="pt-6" align="start">
             <v-avatar class="mr-5">
               <img
-                src="https://randomuser.me/api/portraits/men/99.jpg"
+                :src="`https://randomuser.me/api/portraits/men/${user.id}.jpg`"
                 alt="John"
                 height="36"
                 width="36px"
               />
             </v-avatar>
             <v-text-field
-              class="pt-1"
-              placeholder="What's on your mind, Stefan?"
+              class="status-update pt-1"
+              :placeholder="`What's on your mind, ${user.firstName}?`"
               filled
               rounded
               dense
@@ -34,11 +34,12 @@
         </v-card>
 
         <feed-item
-          v-for="item in items"
-          :key="item.content"
-          :image="item.image"
-          :advertiser="item.advertiser"
-          :content="item.content"
+          v-for="item in advertisements"
+          @clicked="onAdClick"
+          @viewed="onAdView"
+          :key="item.id"
+          :ad="item"
+          class="mb-12"
         />
       </v-col>
     </v-row>
@@ -47,7 +48,7 @@
 
 <script>
 import FeedItem from "./FeedItem.vue";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   components: { FeedItem },
@@ -55,6 +56,7 @@ export default {
   async created() {
     await this.getAdvertisersAction();
     await this.getTagsAction();
+    await this.getAdsAction(this.user.id);
   },
 
   data() {
@@ -72,22 +74,36 @@ export default {
           color: "yellow",
         },
       ],
-      items: [
-        {
-          advertiser: "FC Barcelona United",
-          image: "https://randomuser.me/api/portraits/men/99.jpg",
-          content:
-            "Katalonski TV3 piše kako se trener Marseillea Jorge Sampaoli javio nogometašu Barcelone Konradu de la Fuenteu. Argentinac želi Amerikanca vidjeti u dresu francuskog prvoligaša iduće sezone. iz Barcelone?",
-        },
-      ],
+      seenAds: {},
     };
+  },
+
+  computed: {
+    ...mapGetters({
+      user: "auth/getUser",
+      advertisements: "advertisements/getAdvertisements",
+    }),
   },
 
   methods: {
     ...mapActions({
       getAdvertisersAction: "advertisers/getAdvertisersAction",
       getTagsAction: "tags/getTagsAction",
+      getAdsAction: "advertisements/getAdvertisementsAction",
+      adSeenAction: "advertisements/advertisementSeenAction",
+      adClickedAcion: "advertisements/advertisementClickedAction",
     }),
+
+    onAdView(id) {
+      if (id in this.seenAds) return;
+      this.seenAds[id] = true;
+
+      this.adSeenAction({ userId: this.user.id, advertisementId: id });
+    },
+
+    onAdClick(id) {
+      this.adClickedAcion({ userId: this.user.id, advertisementId: id });
+    },
   },
 };
 </script>
@@ -99,6 +115,17 @@ export default {
   padding: 50px 100px;
   height: 100%;
   min-width: 800px;
+}
+
+.status-update {
+  input {
+    background-color: #181a1b !important;
+    color: white !important;
+  }
+}
+
+.status-card {
+  border-radius: 10px;
 }
 
 .status-link {

@@ -1,29 +1,39 @@
 package com.sbnz.adsys.controller;
-
-import com.sbnz.adsys.dto.AdvertisementRequestDTO;
-import com.sbnz.adsys.dto.CandidateDTO;
-import com.sbnz.adsys.dto.SocialMediaUserDTO;
-import com.sbnz.adsys.dto.UserDto;
+import com.sbnz.adsys.dto.AdvertisementDTO;
+import com.sbnz.adsys.dto.AdvertiserDTO;
 import com.sbnz.adsys.service.AdvertisementService;
-import lombok.Data;
+import com.sbnz.adsys.service.AdvertiserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.List;
+import java.util.LinkedList;
 import java.util.List;
 
-@Data
 @RestController
-@RequestMapping(value = "/api/advertisement", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/posts", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdvertisementController {
-    
+
     @Autowired
     private AdvertisementService advertisementService;
-    
+
+    @GetMapping("/toBeSeen/{id}")
+    public ResponseEntity<List<AdvertisementDTO>> findToBeSeenByUser(@PathVariable("id") long id) {
+        try {
+            return ResponseEntity.ok(advertisementService.findToBeSeenByPatientId(id));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new LinkedList<>());
+        }
+    }
+  
     @PostMapping("/seenAdvertisement/{id}")
     public ResponseEntity<Boolean> adHasBeenSeen(@PathVariable long id, @RequestBody SocialMediaUserDTO socialMediaUserDTO) {
         System.out.println("AdHasBeenSeen");
         return ResponseEntity.ok(advertisementService.advertisementHasBeeSeen(id, socialMediaUserDTO));
     }
+
+
 }
+

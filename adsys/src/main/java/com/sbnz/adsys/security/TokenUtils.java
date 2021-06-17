@@ -13,7 +13,7 @@ import java.util.Date;
 @Component
 public class TokenUtils {
 
-    @Value("ibar")
+    @Value("adsys")
     private String APP_NAME;
 
     @Value("somesecret")

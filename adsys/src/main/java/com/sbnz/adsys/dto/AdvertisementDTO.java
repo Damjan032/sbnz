@@ -1,6 +1,5 @@
 package com.sbnz.adsys.dto;
 
-import com.sbnz.adsys.model.Tag;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;

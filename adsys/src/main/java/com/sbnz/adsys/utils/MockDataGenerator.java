@@ -1,8 +1,10 @@
 package com.sbnz.adsys.utils;
 
 import com.github.javafaker.Faker;
+import com.google.common.collect.Sets;
 import com.sbnz.adsys.model.*;
 import com.sbnz.adsys.repository.*;
+import com.sbnz.adsys.service.SocialMediaUserService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -16,10 +18,10 @@ public class MockDataGenerator {
     private final Faker faker;
     private final Random random;
 
-    private static final int ADVERTISER_COUNT = 5;
-    private static final int ADVERTISEMENT_COUNT = 100;
-    private static final int PAGES_COUNT = 25;
-    private static final int USER_COUNT = 50;
+    private static final int ADVERTISER_COUNT = 3;
+    private static final int ADVERTISEMENT_COUNT = 40;
+    private static final int PAGES_COUNT = 10;
+    private static final int USER_COUNT = 100;
 
     private static final int MIN_TAGS_PER_AD = 1;
     private static final int MAX_TAGS_PER_AD = 3;
@@ -92,7 +94,12 @@ public class MockDataGenerator {
     private void generateAdvertisers() {
         AdvertiserRepository repository = context.getBean(AdvertiserRepository.class);
 
-        for (int i = 0; i < ADVERTISER_COUNT; i++) {
+        Advertiser google = Advertiser.builder()
+                .name("Google")
+                .build();
+
+        advertisers.add(repository.save(google));
+        for (int i = 1; i < ADVERTISER_COUNT; i++) {
             while (true) {
                 try {
                     Advertiser advertiser = Advertiser.builder()
@@ -226,9 +233,10 @@ public class MockDataGenerator {
 
             pagesToLike.forEach(page -> {
                 page.getUsersWhoLikeThePage().add(savedUser);
-                pageRepository.save(page);
             });
         }
+
+        pages.forEach(pageRepository::save);
     }
 
     private void purgeDatabase() {
