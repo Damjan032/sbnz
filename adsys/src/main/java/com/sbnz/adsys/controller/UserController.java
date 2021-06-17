@@ -19,7 +19,6 @@ public class UserController {
     
     @GetMapping()
 	public ResponseEntity<Void> getUsers() {
-        System.out.println("USAO SAM");
         authService.login(new LoginDTO("superadmin@mail.com", "admi5n123"));
        /* authService.login(new LoginDTO("superadmin@mail.com", "admi5n123"));
         authService.login(new LoginDTO("superadmin@mail.com", "admi5n123"));

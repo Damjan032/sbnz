@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.time.SessionPseudoClock;
 
@@ -32,9 +33,16 @@ public class AdvertisementEventsCep {
     public void init() {
         KieServices ks = KieServices.Factory.get();
         KieContainer kc = ks.newKieClasspathContainer();
+    
+        KieSessionConfiguration ksconf = ks.newKieSessionConfiguration();
+        ksconf.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
+        kieSession = kc.newKieSession("advertisementEventsCep-session", ksconf);
+        kieSession.setGlobal("socialMediaUserService", new SocialMediaUserService());
+        /*KieServices ks = KieServices.Factory.get();
+        KieContainer kc = ks.newKieClasspathContainer();
         kieSession = kc.newKieSession("advertisementEventsCep-session");
         kieSession.getSessionConfiguration().setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
-        kieSession.setGlobal("socialMediaUserService", new SocialMediaUserService());
+        kieSession.setGlobal("socialMediaUserService", new SocialMediaUserService());*/
     }
 
     @Test
@@ -43,7 +51,7 @@ public class AdvertisementEventsCep {
         Advertisement ad = DroolsTestUtils.getBasicAdvertisement();
         user.getAdvertisementsToBeShown().add(ad);
 
-        AdvertisementViewEvent event = new AdvertisementViewEvent(new Date(), user, ad);
+        AdvertisementViewEvent event = new AdvertisementViewEvent(user, ad);
         kieSession.insert(event);
         kieSession.fireAllRules();
 
@@ -57,9 +65,9 @@ public class AdvertisementEventsCep {
         Advertisement ad = DroolsTestUtils.getBasicAdvertisement();
         user.getAdvertisementsToBeShown().add(ad);
 
-        kieSession.insert(new AdvertisementViewEvent(new Date(), user, ad));
+        kieSession.insert(new AdvertisementViewEvent( user, ad));
         
-        kieSession.insert(new AdvertisementClickEvent(Instant.now().plus(1, ChronoUnit.MINUTES).toEpochMilli(), user, ad));
+        kieSession.insert(new AdvertisementClickEvent( user, ad));
         kieSession.fireAllRules();
 
         assertFalse(user.getSeenAdvertisements().contains(ad));
@@ -71,32 +79,30 @@ public class AdvertisementEventsCep {
         SocialMediaUser user = DroolsTestUtils.getBasicUser();
         Advertisement ad = DroolsTestUtils.getBasicAdvertisement();
         user.getAdvertisementsToBeShown().add(ad);
-
-        kieSession.insert(new AdvertisementViewEvent(new Date(), user, ad));
-        kieSession.insert(new AdvertisementIgnoredEvent(Date.from(Instant.now().plus(15, ChronoUnit.MINUTES)), user, ad));
+        SessionPseudoClock clock = kieSession.getSessionClock();
+        kieSession.insert(new AdvertisementViewEvent(user, ad));
+        clock.advanceTime(15, TimeUnit.MINUTES);
+        kieSession.insert(new AdvertisementClickEvent(user, ad));
         kieSession.fireAllRules();
-        
+        assertTrue(user.getIgnoredAdvertisements().contains(ad));
         assertFalse(user.getClickedAdvertisements().contains(ad));
     }
     
     @Test
-    public void testAdWasClickedForLessThan10TimesButNotInstant() {
+    public void testAdWasClickedForMoreThen20TimesButNotInstant() {
         SocialMediaUser user = DroolsTestUtils.getBasicUser();
         Advertisement ad = DroolsTestUtils.getBasicAdvertisement();
         user.getAdvertisementsToBeShown().add(ad);
         assertFalse(user.getSeenAdvertisements().contains(ad));
         for (int i = 0; i <10; ++i) {
-            kieSession.insert(new AdvertisementClickEvent(Instant.now().toEpochMilli(), user, ad));
+            kieSession.insert(new AdvertisementClickEvent(user, ad));
             kieSession.fireAllRules();
         }
         assertFalse(user.getSeenAdvertisements().contains(ad));
-        try {
-            Thread.sleep(3 * 1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        SessionPseudoClock clock = kieSession.getSessionClock();
+        clock.advanceTime(15, TimeUnit.MINUTES);
         for (int i = 0; i < 15; ++i) {
-            kieSession.insert(new AdvertisementClickEvent(Instant.now().plus(15, ChronoUnit.MINUTES).toEpochMilli(), user, ad));
+            kieSession.insert(new AdvertisementClickEvent(user, ad));
             kieSession.fireAllRules();
         }
         assertFalse(user.getIgnoredAdvertisements().contains(ad));
@@ -109,14 +115,14 @@ public class AdvertisementEventsCep {
         user.getAdvertisementsToBeShown().add(ad);
         assertFalse(user.getSeenAdvertisements().contains(ad));
         for (int i = 0; i <4; ++i) {
-            kieSession.insert(new AdvertisementClickEvent(Instant.now().toEpochMilli(), user, ad));
+            kieSession.insert(new AdvertisementClickEvent(user, ad));
             kieSession.fireAllRules();
         }
         assertFalse(user.getSeenAdvertisements().contains(ad));
         /*SessionPseudoClock clock = kieSession.getSessionClock();
         clock.advanceTime(15, TimeUnit.MINUTES);*/
         for (int i = 0; i < 5; ++i) {
-            kieSession.insert(new AdvertisementClickEvent(Instant.now().plus(15, ChronoUnit.MINUTES).toEpochMilli(), user, ad));
+            kieSession.insert(new AdvertisementClickEvent( user, ad));
             kieSession.fireAllRules();
         }
     
@@ -129,7 +135,7 @@ public class AdvertisementEventsCep {
         Advertisement ad = DroolsTestUtils.getBasicAdvertisement();
         user.getAdvertisementsToBeShown().add(ad);
         for (int i = 0; i < 35; ++i) {
-            kieSession.insert(new AdvertisementClickEvent(Instant.now().toEpochMilli(), user, ad));
+            kieSession.insert(new AdvertisementClickEvent(user, ad));
             kieSession.fireAllRules();
         }
         /*SessionPseudoClock clock = kieSession.getSessionClock();
