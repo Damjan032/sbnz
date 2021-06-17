@@ -56,7 +56,7 @@ public class SocialMediaUserService {
     }
 
     public void adSeenByUser(Advertisement ad, SocialMediaUser user){
-        System.out.println("User " + user + " has seen the ad: " + ad);
+        System.out.println("SEEN User " + user + " has seen the ad: " + ad);
 
         if (user.getAdvertisementsToBeShown().contains(ad)) {
             user.getAdvertisementsToBeShown().remove(ad);
@@ -66,19 +66,21 @@ public class SocialMediaUserService {
         }
     }
 
+    @Transactional
     public void adIgnoredByUser(Advertisement ad, SocialMediaUser user){
-        System.out.println("User " + user + " has ignored the ad: " + ad);
-
+        System.out.println("IGNORED User " + user + " has ignored the ad: " + ad);
+        if(!user.getIgnoredAdvertisements().contains(ad))
+            user.getIgnoredAdvertisements().add(ad);
+        if (user.getAdvertisementsToBeShown().contains(ad)) {
+            user.getAdvertisementsToBeShown().remove(ad);
+        }
         if (user.getSeenAdvertisements().contains(ad)) {
             user.getSeenAdvertisements().remove(ad);
-            user.getIgnoredAdvertisements().add(ad);
-        } else {
-            // raise exception here
         }
     }
 
     public void adClickedByUser(Advertisement ad, SocialMediaUser user){
-        System.out.println("User " + user + " has clicked the ad: " + ad);
+        System.out.println("CLICKED User " + user + " has clicked the ad: " + ad);
 
         if (user.getSeenAdvertisements().contains(ad)) {
             user.getSeenAdvertisements().remove(ad);

@@ -11,12 +11,12 @@ import org.kie.api.definition.type.Timestamp;
 import java.util.Date;
 
 @Role(Role.Type.EVENT)
-@Timestamp("timestamp")
-@Expires("30s")
+@Timestamp("executionTime")
+@Expires("10m")
 @Data
 @AllArgsConstructor
-public class AdvertisementClickEvent {
-    private Long timestamp;
+public class AdvertisementIgnoredEvent {
+    private Date executionTime;
     private SocialMediaUser socialMediaUser;
     private Advertisement advertisement;
 }
