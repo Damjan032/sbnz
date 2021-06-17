@@ -27,39 +27,24 @@ public class AuthService {
 
     public AuthTokenDTO login(LoginDTO loginDTO) {
         KieSession loginSession = kieService.getLoginSession();
-        Optional<User> optionalUser = userRepository.findByEmail(loginDTO.getEmail());
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword());
-        if (!optionalUser.isPresent()) return null;
-
-        User user = optionalUser.get();
-        try {
-            if (!user.getPassword().equals(loginDTO.getPassword())){
-              throw new Exception();
-            }
-        } catch (Exception e) {
-            LoginEvent loginEvent = new LoginEvent(new Date(), user, false);
+        Optional<User> user = userRepository.findByEmail(loginDTO.getEmail());
+        if (!user.isPresent()) return null;
+        if (!user.get().getPassword().equals(loginDTO.getPassword()) || !user.get().isEnabled()){
+            LoginEvent loginEvent = new LoginEvent(new Date(), user.get(), false);
             loginSession.insert(loginEvent);
             loginSession.fireAllRules();
             userRepository.save(loginEvent.getUser());
             if (!loginEvent.getUser().isEnabled()) {
-                System.out.println("Not allowed to login. You can not login after three failed attempts. Try again after 5 minutes.");
+                System.out.println("Not allowed to login. You can not login after three failed attempts. Try again in 5 minutes.");
                 throw new AuthException("Acc blocked");
             }
             throw new AuthException("Wrong password");
         }
-        LoginEvent loginEvent = new LoginEvent(new Date(), user, true);
-        loginSession.insert(loginEvent);
-        loginSession.fireAllRules();
-        userRepository.save(user);
-        return AuthTokenDTO.builder()
-                .accessToken(this.tokenUtils.generateToken(user.getEmail()))
-                .authorities(user.getAuthorities())
-                .user(BasicUserInfoDTO.builder()
-                        .id(user.getId())
-                        .firstName(user.getFirstName())
-                        .lastName(user.getLastName())
-                        .email(user.getEmail())
-                        .build())
-                .build();
+        return new AuthTokenDto(
+                user.get().getId(),
+                user.get().getUsername(),
+                this.tokenUtils.generateToken(user.get().getEmail()),
+                user.get().getAuthorities()
+        );
     }
 }

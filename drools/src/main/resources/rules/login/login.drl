@@ -5,7 +5,7 @@ import com.sbnz.adsys.event.*;
 
 declare SuspiciousUserEvent
     @role(event)
-    @expires(5m)
+    @expires(30s)
     user: User
     reason: String
 end
@@ -14,7 +14,7 @@ rule "More than 3 logging in unsuccessfully in 1 minute from one user"
     when
         $loginEvent: LoginEvent($user: user, user != null);
         Number(intValue >= 3 ) from accumulate(
-			$accumulateLoginEvent: LoginEvent(user.getId() == $user.getId(), success == false) over window:time(2m), count($accumulateLoginEvent)
+			$accumulateLoginEvent: LoginEvent(user.getId() == $user.getId(), success == false) over window:time(30s), count($accumulateLoginEvent)
 		)
 		not (SuspiciousUserEvent(user.getId() == $user.getId(), reason == "Many unsuccessful logging in from same email"))
     then
@@ -27,7 +27,7 @@ rule "Successful logging in"
     when
         $loginEvent: LoginEvent($user: user, user != null);
         Number(intValue < 3 ) from accumulate(
-			$accumulateLoginEvent: LoginEvent(user.getId() == $user.getId(), success == false) over window:time(2m), count($accumulateLoginEvent)
+			$accumulateLoginEvent: LoginEvent(user.getId() == $user.getId(), success == false) over window:time(30s), count($accumulateLoginEvent)
 		)
 		not (SuspiciousUserEvent(user.id == $user.getId(), reason == "Many unsuccessful logging in from same email"))
     then
