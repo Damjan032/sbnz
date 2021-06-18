@@ -25,19 +25,19 @@ public class KieConfig {
         return kieContainer;
     }
     
-    @Bean(name = "loginSession")
-    public KieSession loginSession() {
-        return kieContainer().newKieSession("login-session");
-    }
-    
-    @Bean(name = "advertisementSession")
-    public KieSession advertisementSession() {
-        return kieContainer().newKieSession("advertisement-session");
-    }
-
-    @Bean(name = "recommendationSession")
-    public KieSession recommendationSession() {
-        return kieContainer().newKieSession("ksession-rules");
-    }
+//    @Bean(name = "loginSession")
+//    public KieSession loginSession() {
+//        return kieContainer().newKieSession("login-session");
+//    }
+//
+//    @Bean(name = "advertisementSession")
+//    public KieSession advertisementSession() {
+//        return kieContainer().newKieSession("advertisement-session");
+//    }
+//
+//    @Bean(name = "recommendationSession")
+//    public KieSession recommendationSession() {
+//        return kieContainer().newKieSession("ksession-rules");
+//    }
     
 }

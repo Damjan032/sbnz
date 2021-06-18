@@ -72,7 +72,7 @@ public class SocialMediaUserService {
     }
 
     public void adSeenByUser(Advertisement ad, SocialMediaUser user){
-        System.out.println("SEEN User " + user + " has seen the ad: " + ad);
+        logger.info("Ad by {} added to user's {} SEEN ads", ad.getAdvertiser().getName(), user.fullName());
 
         if (user.getAdvertisementsToBeShown().contains(ad)) {
             user.getAdvertisementsToBeShown().remove(ad);

@@ -37,7 +37,10 @@ public class DroolsTest {
             SecondEvent e2 = new SecondEvent();
 
             kSession.insert(e1);
+            kSession.fireAllRules();
             clock.advanceTime(50, TimeUnit.SECONDS);
+
+            kSession = getSession(true);
             kSession.insert(e2);
             kSession.fireAllRules();
         } catch (Throwable t) {

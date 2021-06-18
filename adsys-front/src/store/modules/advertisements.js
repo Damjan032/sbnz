@@ -22,7 +22,6 @@ const actions = {
   },
 
   async advertisementSeenAction({}, payload) {
-    console.log(payload)
     try {
       await axios.post("/api/posts/seen", payload);
     } catch (e) {

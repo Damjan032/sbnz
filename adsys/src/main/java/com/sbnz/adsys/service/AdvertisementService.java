@@ -15,6 +15,7 @@ import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -31,6 +32,9 @@ public class AdvertisementService {
     
     @Autowired
     private KieService kieService;
+
+    @Autowired
+    private ApplicationContext context;
 
     @Autowired
     private AdvertisementRepository advertisementRepository;
@@ -66,16 +70,13 @@ public class AdvertisementService {
         if(!advertisement.isPresent() || !socialMediaUser.isPresent())
             throw new BadRequestException("Wrong advertisement id");
 
-        AdvertisementViewEvent advertisementViewEvent = new AdvertisementViewEvent(socialMediaUser.get(), advertisement.get());
+        AdvertisementViewEvent viewEvent = new AdvertisementViewEvent(socialMediaUser.get(), advertisement.get());
+        KieSession session = kieService.getEventSession();
+        session.insert(viewEvent);
+        session.fireAllRules();
+
         logger.info("New View event by user {} for ad by {}", socialMediaUser.get().fullName(),
                 advertisement.get().getAdvertiser().getName());
-
-        // TODO: kieSession treba da bude injektovana ovde, ne da se kreira svaki put
-//        KieSession kieSession = kieService.getSession(RECOMMENDATION_SESSION);
-//        kieSession.setGlobal("socialMediaUserService", this.socialMediaUserService);
-//        kieSession.insert(advertisementViewEvent);
-//        kieSession.fireAllRules();
-
     }
 
     public void advertisementHasBeenClicked(AdvertisementEventDTO eventDTO) throws BadRequestException {
@@ -86,6 +87,11 @@ public class AdvertisementService {
             throw new BadRequestException("Wrong advertisement id");
 
         AdvertisementClickEvent clickEvent = new AdvertisementClickEvent(socialMediaUser.get(), advertisement.get());
+
+        KieSession session = kieService.getEventSession();
+        session.insert(clickEvent);
+        session.fireAllRules();
+
         logger.info("New Click event by user {} for ad by {}", socialMediaUser.get().fullName(),
                 advertisement.get().getAdvertiser().getName());
     }

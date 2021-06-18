@@ -119,13 +119,11 @@ export default {
       adClickedAcion: "advertisements/advertisementClickedAction",
     }),
 
-    onAdView(id) {
+    async onAdView(id) {
       if (id in this.seenAds) return;
       this.seenAds[id] = true;
 
-      // const x = { userId: this.user.id, advertisementId: id };
-      // console.log(x);
-      this.adSeenAction({ userId: this.user.id, advertisementId: id });
+      await this.adSeenAction({ userId: this.user.id, advertisementId: id });
     },
 
     onAdClick(id) {
