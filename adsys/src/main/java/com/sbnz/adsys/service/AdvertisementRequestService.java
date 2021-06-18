@@ -3,6 +3,7 @@ package com.sbnz.adsys.service;
 import com.sbnz.adsys.dto.AdvertisementRequestDTO;
 import com.sbnz.adsys.dto.CandidateDTO;
 import com.sbnz.adsys.model.*;
+import com.sbnz.adsys.repository.SocialMediaUserRepository;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -22,6 +23,9 @@ public class AdvertisementRequestService {
 
     @Autowired
     private AdvertisementService advertisementService;
+    
+    @Autowired
+    private SocialMediaUserRepository socialMediaUserRepository;
 
     @Autowired
     private KieService kieService;
@@ -43,7 +47,9 @@ public class AdvertisementRequestService {
 
     public List<CandidateDTO> submit(AdvertisementRequestDTO requestDTO) {
         AdvertisementRequest request = toEntity(requestDTO);
-        advertisementService.save(request.getAdvertisement());
+        //request.getAdvertisement().getSocialMediaUsersSeen().add(this.socialMediaUserRepository.findById())
+        Advertisement advertisement = request.getAdvertisement();
+        advertisementService.save(advertisement);
 
         KieSession kieSession = kieService.getSession(RECOMMENDATION_SESSION);
 
@@ -67,12 +73,18 @@ public class AdvertisementRequestService {
                 .sorted(Comparator.comparingDouble(c -> -c.getFinalScore()))
                 .limit((int) request.getBudget())
                 .collect(Collectors.toList());
-
+        if(advertisement.getSocialMediaUsersToBeShow()==null)
+            advertisement.setSocialMediaUsersToBeShow(new LinkedList<>());
+        
         toBeShownTo.forEach(candidate -> {
+            advertisement.getSocialMediaUsersToBeShow().add(this.socialMediaUserRepository.findById(candidate.getUser().getId()).get());
+            advertisementService.save(advertisement);
             SocialMediaUser user = candidate.getUser();
             user.getAdvertisementsToBeShown().add(request.getAdvertisement());
             userService.save(user);
         });
+        
+        advertisementService.save(request.getAdvertisement());
 
         return toBeShownTo.stream()
                 .map(candidate -> candidateService.toDTO(candidate))

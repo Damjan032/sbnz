@@ -13,6 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 @Builder
 public class SocialMediaUser{
     @Id
@@ -28,20 +29,35 @@ public class SocialMediaUser{
     
     private String city;
     
-    @ManyToMany(mappedBy = "usersWhoLikeThePage")
+    @ManyToMany(mappedBy = "usersWhoLikeThePage", fetch = FetchType.LAZY)
     private List<SocialMediaPage> likedSocialMediaPages;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "socialMediaUsersToBeShow", fetch = FetchType.LAZY)
     private List<Advertisement> advertisementsToBeShown;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "socialMediaUsersSeen", fetch = FetchType.LAZY)
     private List<Advertisement> seenAdvertisements;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "socialMediaUsersIgnored", fetch = FetchType.LAZY)
     private List<Advertisement> ignoredAdvertisements;
-
-    @ManyToMany
+    
+    @ManyToMany(mappedBy = "socialMediaUsersClicked", fetch = FetchType.LAZY)
     private List<Advertisement> clickedAdvertisements;
+  /* @ManyToMany
+   private List<SocialMediaPage> likedSocialMediaPages;
+    
+    @ManyToMany
+    private List<Advertisement> advertisementsToBeShown;
+    
+    @ManyToMany
+    private List<Advertisement> seenAdvertisements;
+    
+    @ManyToMany(mappedBy = "socialMediaUsersIgnored", fetch = FetchType.LAZY)
+    @JoinTable(name = "social_media_user_ignored_advertisements")
+    private List<Advertisement> ignoredAdvertisements;
+    
+    @ManyToMany
+    private List<Advertisement> clickedAdvertisements;*/
 
     public String fullName() {
         return user.getFirstName() + " " + user.getLastName();

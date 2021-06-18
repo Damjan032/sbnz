@@ -25,16 +25,42 @@ public class Advertisement {
 
     private String targetUrl;
     
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     private List<Tag> tags;
 
     @OneToMany(mappedBy="user")
     private List<Event> events;
     
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="advertiser_id", nullable=false)
     private Advertiser advertiser;
+    
 
+    /*
+        @ManyToMany(mappedBy = "advertisementsToBeShown", fetch = FetchType.LAZY)
+    private List<SocialMediaUser> socialMediaUsersToBeShow;
+    
+    @ManyToMany(mappedBy = "seenAdvertisements", fetch = FetchType.LAZY)
+    private List<SocialMediaUser> socialMediaUsersSeen;
+    
+    @ManyToMany(mappedBy = "ignoredAdvertisements", fetch = FetchType.LAZY)
+    private List<SocialMediaUser> socialMediaUsersIgnored;
+    
+    @ManyToMany(mappedBy = "clickedAdvertisements", fetch = FetchType.LAZY)
+    private List<SocialMediaUser> socialMediaUsersClicked;
+     */
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<SocialMediaUser> socialMediaUsersToBeShow;
+    
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<SocialMediaUser> socialMediaUsersSeen;
+    
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<SocialMediaUser> socialMediaUsersIgnored;
+    
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<SocialMediaUser> socialMediaUsersClicked;
+    
     private LocalDate datePublished;
 
     @Override

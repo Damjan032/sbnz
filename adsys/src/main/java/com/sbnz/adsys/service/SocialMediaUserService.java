@@ -5,9 +5,11 @@ import com.sbnz.adsys.dto.AdvertisementDTO;
 import com.sbnz.adsys.dto.AdvertiserDTO;
 import com.sbnz.adsys.dto.SocialMediaPageDTO;
 import com.sbnz.adsys.dto.SocialMediaUserDTO;
+import com.sbnz.adsys.exception.BadRequestException;
 import com.sbnz.adsys.model.Advertisement;
 import com.sbnz.adsys.model.SocialMediaPage;
 import com.sbnz.adsys.model.SocialMediaUser;
+import com.sbnz.adsys.repository.AdvertisementRepository;
 import com.sbnz.adsys.repository.SocialMediaUserRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -29,6 +31,9 @@ public class SocialMediaUserService {
 
     private static final Logger logger = LoggerFactory.getLogger(SocialMediaUserService.class);
 
+    @Autowired
+    private AdvertisementRepository advertisementRepository;
+    
     @Autowired
     private SocialMediaUserRepository socialMediaUserRepository;
 
@@ -71,10 +76,13 @@ public class SocialMediaUserService {
         }
     }
 
-    public void adSeenByUser(Advertisement ad, SocialMediaUser user){
+    public void adSeenByUser(Advertisement ad, SocialMediaUser user) throws BadRequestException {
         logger.info("Ad by {} added to user's {} SEEN ads", ad.getAdvertiser().getName(), user.fullName());
-
-        if (user.getAdvertisementsToBeShown().contains(ad)) {
+        Optional<SocialMediaUser> socialMediaUser = this.socialMediaUserRepository.findById(user.getId());
+        
+        if(!socialMediaUser.isPresent()) throw new BadRequestException("Wrong user id");
+        this.advertisementRepository.findAll().get(0);
+        if (socialMediaUser.get().getAdvertisementsToBeShown().contains(ad)) {
             user.getAdvertisementsToBeShown().remove(ad);
             user.getSeenAdvertisements().add(ad);
         } else {

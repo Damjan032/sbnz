@@ -76,8 +76,9 @@ public class AdvertisementEventsCep {
         user.getAdvertisementsToBeShown().add(ad);
         SessionPseudoClock clock = kieSession.getSessionClock();
         kieSession.insert(new AdvertisementViewEvent(user, ad));
+        kieSession.fireAllRules();
         clock.advanceTime(15, TimeUnit.MINUTES);
-        kieSession.insert(new AdvertisementClickEvent(user, ad));
+       /* kieSession.insert(new AdvertisementClickEvent(user, ad));*/
         kieSession.fireAllRules();
         assertTrue(user.getIgnoredAdvertisements().contains(ad));
         assertFalse(user.getClickedAdvertisements().contains(ad));

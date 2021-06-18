@@ -5,7 +5,10 @@ import com.sbnz.adsys.dto.BasicUserInfoDTO;
 import com.sbnz.adsys.dto.LoginDTO;
 import com.sbnz.adsys.event.LoginEvent;
 import com.sbnz.adsys.exception.AuthException;
+import com.sbnz.adsys.model.SocialMediaUser;
 import com.sbnz.adsys.model.User;
+import com.sbnz.adsys.repository.AdvertisementRepository;
+import com.sbnz.adsys.repository.SocialMediaUserRepository;
 import com.sbnz.adsys.repository.UserRepository;
 import com.sbnz.adsys.security.TokenUtils;
 import lombok.AllArgsConstructor;
@@ -23,7 +26,8 @@ public class AuthService {
     private final KieService kieService;
     private final UserRepository userRepository;
     private final TokenUtils tokenUtils;
-
+    private final SocialMediaUserRepository socialMediaUserRepository;
+    private final AdvertisementRepository advertisementRepository;
     public AuthTokenDTO login(LoginDTO loginDTO) {
         KieSession loginSession = kieService.getLoginSession();
         Optional<User> optionalUser = userRepository.findByEmail(loginDTO.getEmail());

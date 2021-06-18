@@ -196,9 +196,32 @@ public class MockDataGenerator {
         }
     }
 
+    /*    public void generateManyToManySocMediaUsersAndAd(){
+        SocialMediaUserRepository repository = context.getBean(SocialMediaUserRepository.class);
+        for(SocialMediaUser socialMediaUser: socialMediaUsers){
+            List<Advertisement> allAdsShuffled = getRandomElements(advertisements, advertisements.size());
+            List<Advertisement> ignored = new LinkedList<>();
+            List<Advertisement> clicked = new LinkedList<>();
+    
+            // 33% chance to be ignored clicked or not shown at all
+            for (int i = 0; i < allAdsShuffled.size(); i++) {
+                int randomNum = random.nextInt(3);
+                if (randomNum == 0)
+                    ignored.add(allAdsShuffled.get(i));
+                else if (randomNum == 1)
+                    clicked.add(allAdsShuffled.get(i));
+            }
+            socialMediaUser.setAdvertisementsToBeShown(new LinkedList<>());
+
+            socialMediaUser.setClickedAdvertisements(clicked);
+            socialMediaUser.setIgnoredAdvertisements(ignored);
+            repository.saveAll(socialMediaUsers);
+        }
+    }*/
     private void generateSocialMediaUsers() {
         SocialMediaUserRepository repository = context.getBean(SocialMediaUserRepository.class);
         SocialMediaPageRepository pageRepository = context.getBean(SocialMediaPageRepository.class);
+        AdvertisementRepository advertisementRepository = context.getBean(AdvertisementRepository.class);
 
         for (User user : users) {
             List<SocialMediaPage> pagesToLike = getRandomElements(pages, MIN_PAGES_LIKED, MAX_PAGES_LIKED);
@@ -227,9 +250,35 @@ public class MockDataGenerator {
                     .ignoredAdvertisements(ignored)
                     .clickedAdvertisements(clicked)
                     .build();
-
+    
             SocialMediaUser savedUser = repository.save(socialMediaUser);
             socialMediaUsers.add(savedUser);
+            for (Advertisement ig: ignored){
+                List<SocialMediaUser> newList = ig.getSocialMediaUsersIgnored();
+                if(newList==null){
+                    newList =new LinkedList<>();
+                }
+                newList.add(socialMediaUser);
+                ig.setSocialMediaUsersIgnored(newList);
+                advertisementRepository.save(ig);
+            }
+            for (Advertisement cl: clicked){
+                List<SocialMediaUser> newList = cl.getSocialMediaUsersClicked();
+                if(newList==null){
+                    newList =new LinkedList<>();
+                }
+                newList.add(socialMediaUser);
+                cl.setSocialMediaUsersClicked(newList);
+                advertisementRepository.save(cl);
+            }
+            
+          
+            
+           /* List<SocialMediaUser> socList = new LinkedList<SocialMediaUser>();
+            socList.add(savedUser);
+            Advertisement advertisement = advertisementRepository.findAll().get(0);
+            advertisement.setSocialMediaUsersIgnored(socList);
+            advertisementRepository.save(advertisement);*/
 
             pagesToLike.forEach(page -> {
                 page.getUsersWhoLikeThePage().add(savedUser);
