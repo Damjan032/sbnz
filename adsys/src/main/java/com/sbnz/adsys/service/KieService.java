@@ -35,31 +35,16 @@ public class KieService {
     private void init() {
         recommendationSession = getSession("ksession-rules");
         loginSession = getSession("login-session");
+
         eventSession = getSession("advertisementEventsCep-session");
-        if (userService == null) {
-            throw new RuntimeException("User service je null");
-        }
         eventSession.setGlobal("socialMediaUserService", userService);
-
-        // TODO: mozda odavde da krene thread koji ce svakih x sekundi pokrenuti fireAllRules za eventSession?
-    }
-
-
-    public KieSession getSession() {
-        return this.kieContainer.newKieSession();
-    }
-
-    public KieSession getSession(String sessionName, String agendaGroup) {
-        KieSession ks = this.kieContainer.newKieSession(sessionName);
-        ks.getAgenda().getAgendaGroup(agendaGroup).setFocus();
-        return ks;
     }
 
     public KieSession getSession(String sessionName) {
         return this.kieContainer.newKieSession(sessionName);
     }
 
-    public void runSession(KieSession kieSession) {
+    public void runAndDestroySession(KieSession kieSession) {
         kieSession.fireAllRules();
         kieSession.dispose();
         kieSession.destroy();

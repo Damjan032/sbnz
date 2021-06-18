@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public class AdvertisementService {
 
     private static final Logger logger = LoggerFactory.getLogger(AdvertisementService.class);
-    
+
     @Autowired
     private KieService kieService;
 
@@ -41,7 +41,7 @@ public class AdvertisementService {
 
     @Autowired
     private AdvertiserService advertiserService;
-    
+
     @Autowired
     private SocialMediaUserService socialMediaUserService;
 
@@ -58,7 +58,7 @@ public class AdvertisementService {
         return advertisementRepository.save(advertisement);
     }
 
-    public List<AdvertisementDTO> findToBeSeenByUserId(long id){
+    public List<AdvertisementDTO> findToBeSeenByUserId(long id) {
         return userService.findById(id)
                 .getAdvertisementsToBeShown();
     }
@@ -67,33 +67,47 @@ public class AdvertisementService {
         Optional<Advertisement> advertisement = this.advertisementRepository.findById(eventDTO.getAdvertisementId());
         Optional<SocialMediaUser> socialMediaUser = this.socialMediaUserService.findByIdEntity(eventDTO.getUserId());
 
-        if(!advertisement.isPresent() || !socialMediaUser.isPresent())
+        if (!advertisement.isPresent() || !socialMediaUser.isPresent())
             throw new BadRequestException("Wrong advertisement id");
 
         AdvertisementViewEvent viewEvent = new AdvertisementViewEvent(socialMediaUser.get(), advertisement.get());
-        KieSession session = kieService.getEventSession();
-        session.insert(viewEvent);
-        session.fireAllRules();
-
         logger.info("New View event by user {} for ad by {}", socialMediaUser.get().fullName(),
                 advertisement.get().getAdvertiser().getName());
+
+        KieSession session = kieService.getEventSession();
+        session.insert(viewEvent);
+//        session.fireAllRules();
+
+        new Thread(() -> fireRulesAfterDelay(session, 2000)).start();
     }
 
     public void advertisementHasBeenClicked(AdvertisementEventDTO eventDTO) throws BadRequestException {
         Optional<Advertisement> advertisement = this.advertisementRepository.findById(eventDTO.getAdvertisementId());
         Optional<SocialMediaUser> socialMediaUser = this.socialMediaUserService.findByIdEntity(eventDTO.getUserId());
 
-        if(!advertisement.isPresent() || !socialMediaUser.isPresent())
+        if (!advertisement.isPresent() || !socialMediaUser.isPresent())
             throw new BadRequestException("Wrong advertisement id");
 
         AdvertisementClickEvent clickEvent = new AdvertisementClickEvent(socialMediaUser.get(), advertisement.get());
+        logger.info("New Click event by user {} for ad by {}", socialMediaUser.get().fullName(),
+                advertisement.get().getAdvertiser().getName());
 
         KieSession session = kieService.getEventSession();
         session.insert(clickEvent);
         session.fireAllRules();
+    }
 
-        logger.info("New Click event by user {} for ad by {}", socialMediaUser.get().fullName(),
-                advertisement.get().getAdvertiser().getName());
+    private void fireRulesAfterDelay(KieSession session, int delay) {
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        session.fireAllRules();
+                        System.out.println("Executed rules after delay " + delay);
+                    }
+                },
+                delay
+        );
     }
 
 

@@ -40,8 +40,7 @@ public class DroolsTest {
             kSession.fireAllRules();
             clock.advanceTime(50, TimeUnit.SECONDS);
 
-            kSession = getSession(true);
-            kSession.insert(e2);
+//            kSession.insert(e2);
             kSession.fireAllRules();
         } catch (Throwable t) {
             t.printStackTrace();
