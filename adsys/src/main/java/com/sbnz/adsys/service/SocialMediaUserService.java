@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -67,49 +68,80 @@ public class SocialMediaUserService {
     }
 
     @Transactional
-    public void removeAdvertisementFromSocialMediaUser(SocialMediaUser socialMediaUser, Advertisement advertisement) {
-        Optional<Advertisement> adToIgnore = socialMediaUser.getAdvertisementsToBeShown()
-                .stream().filter(ad -> ad.getId().equals(advertisement.getId())).findFirst();
+    public void removeAdvertisementFromSocialMediaUser(SocialMediaUser user, Advertisement ad) throws BadRequestException {
+        logger.info("Remove by {} added to user's {} SEEN ads", ad.getAdvertiser().getName(), user.fullName());
+        Optional<SocialMediaUser> socialMediaUser = this.socialMediaUserRepository.findById(user.getId());
+        Optional<Advertisement> advertisement = this.advertisementRepository.findById(ad.getId());
+        if(!socialMediaUser.isPresent() || !advertisement.isPresent()) throw new BadRequestException("Wrong user id");
+        
+        Optional<Advertisement> adToIgnore = socialMediaUser.get().getAdvertisementsToBeShown()
+                .stream().filter(adToIgnored -> adToIgnored.getId().equals(advertisement.get().getId())).findFirst();
         if (adToIgnore.isPresent()) {
-            socialMediaUser.getAdvertisementsToBeShown().remove(adToIgnore.get());
-            socialMediaUser.getIgnoredAdvertisements().add(adToIgnore.get());
+            advertisement.get().getSocialMediaUsersIgnored().add(socialMediaUser.get());
+            advertisement.get().getSocialMediaUsersToBeShow().remove(socialMediaUser.get());
+            
+            socialMediaUser.get().getAdvertisementsToBeShown().remove(adToIgnore.get());
+            socialMediaUser.get().getIgnoredAdvertisements().add(adToIgnore.get());
         }
     }
 
+    @Transactional
     public void adSeenByUser(Advertisement ad, SocialMediaUser user) throws BadRequestException {
         logger.info("Ad by {} added to user's {} SEEN ads", ad.getAdvertiser().getName(), user.fullName());
         Optional<SocialMediaUser> socialMediaUser = this.socialMediaUserRepository.findById(user.getId());
+        Optional<Advertisement> advertisement = this.advertisementRepository.findById(ad.getId());
+        if(!socialMediaUser.isPresent() || !advertisement.isPresent()) throw new BadRequestException("Wrong user id");
         
-        if(!socialMediaUser.isPresent()) throw new BadRequestException("Wrong user id");
-        this.advertisementRepository.findAll().get(0);
         if (socialMediaUser.get().getAdvertisementsToBeShown().contains(ad)) {
-            user.getAdvertisementsToBeShown().remove(ad);
-            user.getSeenAdvertisements().add(ad);
+            if(advertisement.get().getSocialMediaUsersSeen()==null) advertisement.get().setSocialMediaUsersSeen(new LinkedList<>());
+            if(socialMediaUser.get().getSeenAdvertisements()==null) socialMediaUser.get().setSeenAdvertisements(new LinkedList<>());
+            
+            advertisement.get().getSocialMediaUsersSeen().add(socialMediaUser.get());
+            advertisement.get().getSocialMediaUsersToBeShow().remove(socialMediaUser.get());
+            socialMediaUser.get().getAdvertisementsToBeShown().remove(advertisement.get());
+            socialMediaUser.get().getSeenAdvertisements().add(advertisement.get());
+           
         } else {
             // raise exception here
         }
     }
 
     @Transactional
-    public void adIgnoredByUser(Advertisement ad, SocialMediaUser user){
+    public void adIgnoredByUser(Advertisement ad, SocialMediaUser user) throws BadRequestException {
         logger.info("Ad by {} added to user's {} IGNORED ads", ad.getAdvertiser().getName(), user.fullName());
-
-        if(!user.getIgnoredAdvertisements().contains(ad))
-            user.getIgnoredAdvertisements().add(ad);
-        if (user.getAdvertisementsToBeShown().contains(ad)) {
-            user.getAdvertisementsToBeShown().remove(ad);
+        Optional<SocialMediaUser> socialMediaUser = this.socialMediaUserRepository.findById(user.getId());
+        Optional<Advertisement> advertisement = this.advertisementRepository.findById(ad.getId());
+        if(!socialMediaUser.isPresent() || !advertisement.isPresent()) throw new BadRequestException("Wrong user id");
+        
+        if(!socialMediaUser.get().getIgnoredAdvertisements().contains(advertisement.get()))
+            advertisement.get().getSocialMediaUsersIgnored().add(socialMediaUser.get());
+            socialMediaUser.get().getIgnoredAdvertisements().add(advertisement.get());
+            
+        if (socialMediaUser.get().getAdvertisementsToBeShown().contains(advertisement.get())) {
+            advertisement.get().getSocialMediaUsersToBeShow().add(socialMediaUser.get());
+            socialMediaUser.get().getAdvertisementsToBeShown().add(advertisement.get());
         }
-        if (user.getSeenAdvertisements().contains(ad)) {
-            user.getSeenAdvertisements().remove(ad);
+        if (socialMediaUser.get().getSeenAdvertisements().contains(advertisement.get())) {
+            advertisement.get().getSocialMediaUsersSeen().remove(socialMediaUser.get());
+            socialMediaUser.get().getSeenAdvertisements().remove(ad);
         }
     }
 
-    public void adClickedByUser(Advertisement ad, SocialMediaUser user){
+    public void adClickedByUser(Advertisement ad, SocialMediaUser user) throws BadRequestException {
         logger.info("Ad by {} added to user's {} CLICKED ads", ad.getAdvertiser().getName(), user.fullName());
+        Optional<SocialMediaUser> socialMediaUser = this.socialMediaUserRepository.findById(user.getId());
+        Optional<Advertisement> advertisement = this.advertisementRepository.findById(ad.getId());
+        if(!socialMediaUser.isPresent() || !advertisement.isPresent()) throw new BadRequestException("Wrong user id");
 
-        if (user.getSeenAdvertisements().contains(ad)) {
-            user.getSeenAdvertisements().remove(ad);
-            user.getClickedAdvertisements().add(ad);
+        if (socialMediaUser.get().getSeenAdvertisements().contains(advertisement.get())) {
+            if(advertisement.get().getSocialMediaUsersClicked()==null) advertisement.get().setSocialMediaUsersClicked(new LinkedList<>());
+            if(socialMediaUser.get().getClickedAdvertisements()==null) advertisement.get().setSocialMediaUsersClicked(new LinkedList<>());
+            
+            advertisement.get().getSocialMediaUsersSeen().remove(socialMediaUser.get());
+            advertisement.get().getSocialMediaUsersClicked().add(socialMediaUser.get());
+            
+            socialMediaUser.get().getSeenAdvertisements().remove(advertisement.get());
+            socialMediaUser.get().getClickedAdvertisements().add(advertisement.get());
         } else {
             // raise exception here
         }
