@@ -35,12 +35,11 @@ rule "Ad has not been clicked for more than 10 mins"
        this after[0s,10m] $adEvent ))
     then
         socialMediaUserService.adIgnoredByUser($ad, $user);
-        System.out.println("NIJE KLIKNUTA U ZADNJIJA 10 min");
         delete($adEvent);
 
 end
 
-rule "Ad was clicked for more than 10 times in the last 10min"
+rule "Ad was clicked for more than 20 times in the last 2s"
     when
         $aie: AdvertisementClickEvent($ad: advertisement, $user: socialMediaUser)
         Number(intValue >= 20) from accumulate(
@@ -48,7 +47,6 @@ rule "Ad was clicked for more than 10 times in the last 10min"
            over window:time(2s), count($cavc)
         )
     then
-        System.out.println("NIJE KLIKNUTA U ZADNJIJAAAAAA 10 min");
         delete($aie);
         socialMediaUserService.adIgnoredByUser($ad, $user);
 end
