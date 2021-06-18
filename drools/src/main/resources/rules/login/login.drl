@@ -18,7 +18,6 @@ rule "More than 3 logging in unsuccessfully in 1 minute from one user"
 		)
 		not (SuspiciousUserEvent(user.getId() == $user.getId(), reason == "Many unsuccessful logging in from same email"))
     then
-    	System.out.println("Many unsuccessful logging in from same username");
     	$user.setEnabled(false);
     	insert(new SuspiciousUserEvent($user, "Many unsuccessful logging in from same email"));
 end
@@ -31,6 +30,5 @@ rule "Successful logging in"
 		)
 		not (SuspiciousUserEvent(user.id == $user.getId(), reason == "Many unsuccessful logging in from same email"))
     then
-    	System.out.println("Successful logging in");
     	$user.setEnabled(true);
 end

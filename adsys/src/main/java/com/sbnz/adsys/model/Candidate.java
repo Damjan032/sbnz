@@ -12,7 +12,13 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Setter
+@Entity
 public class Candidate {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
     private SocialMediaUser user;
 
     private boolean isAgeGroup, isGeographyGroup;

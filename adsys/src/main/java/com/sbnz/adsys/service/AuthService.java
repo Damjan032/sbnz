@@ -13,6 +13,8 @@ import com.sbnz.adsys.repository.UserRepository;
 import com.sbnz.adsys.security.TokenUtils;
 import lombok.AllArgsConstructor;
 import org.kie.api.runtime.KieSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -23,11 +25,14 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class AuthService {
+    private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
+
     private final KieService kieService;
     private final UserRepository userRepository;
     private final TokenUtils tokenUtils;
     private final SocialMediaUserRepository socialMediaUserRepository;
     private final AdvertisementRepository advertisementRepository;
+
     public AuthTokenDTO login(LoginDTO loginDTO) {
         KieSession loginSession = kieService.getLoginSession();
         Optional<User> optionalUser = userRepository.findByEmail(loginDTO.getEmail());
@@ -39,7 +44,7 @@ public class AuthService {
             loginSession.fireAllRules();
             userRepository.save(loginEvent.getUser());
             if (!loginEvent.getUser().isEnabled()) {
-                System.out.println("Not allowed to login. You can not login after three failed attempts. Try again in 5 minutes.");
+                logger.error("Not allowed to login. You can not login after three failed attempts. Try again in 5 minutes.");
                 throw new AuthException("Acc blocked");
             }
             throw new AuthException("Wrong password");

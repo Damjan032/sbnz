@@ -47,9 +47,7 @@ public class AdvertisementRequestService {
 
     public List<CandidateDTO> submit(AdvertisementRequestDTO requestDTO) {
         AdvertisementRequest request = toEntity(requestDTO);
-        //request.getAdvertisement().getSocialMediaUsersSeen().add(this.socialMediaUserRepository.findById())
         Advertisement advertisement = request.getAdvertisement();
-        advertisementService.save(advertisement);
 
         KieSession kieSession = kieService.getSession(RECOMMENDATION_SESSION);
 
@@ -78,7 +76,6 @@ public class AdvertisementRequestService {
         
         toBeShownTo.forEach(candidate -> {
             advertisement.getSocialMediaUsersToBeShow().add(this.socialMediaUserRepository.findById(candidate.getUser().getId()).get());
-            advertisementService.save(advertisement);
             SocialMediaUser user = candidate.getUser();
             user.getAdvertisementsToBeShown().add(request.getAdvertisement());
             userService.save(user);

@@ -1,6 +1,5 @@
 import axios from "axios";
 
-
 const state = {
   advertisements: [],
 };
@@ -12,7 +11,17 @@ const mutations = {
 };
 
 const actions = {
-  async getAdvertisementsAction({ commit }, userId) {
+  async getAllAdvertisementsAction({ commit }) {
+    try {
+      const { data } = await axios.get("/api/posts");
+      console.log(data);
+      commit("setAdvertisements", data);
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  async getAdvertisementsToBeSeenAction({ commit }, userId) {
     try {
       const { data } = await axios.get(`/api/posts/toBeSeen/${userId}`);
       commit("setAdvertisements", data);

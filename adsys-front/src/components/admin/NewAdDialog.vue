@@ -13,7 +13,7 @@
           <v-card-title class="px-0 ">Advertisement data</v-card-title>
           <v-select
             :dark="true"
-            v-model="request.advertiser"
+            v-model="request.advertisement.advertiser"
             :items="advertisers"
             item-text="name"
             label="Company"
@@ -30,6 +30,7 @@
             v-model="request.advertisement.tags"
             :items="tags"
             item-text="value"
+            :return-object="false"
             label="Tags"
             multiple
             chips
@@ -85,7 +86,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   components: {},
@@ -100,11 +101,9 @@ export default {
       valid: false,
       rule: [(v) => !!v || "Requred field"],
       request: {
-        id: 0,
         minAge: 0,
         maxAge: 99,
         geographicLocation: "Serbia",
-        advertiser: null,
         budget: 20,
         advertisement: {
           title: "",
@@ -113,16 +112,6 @@ export default {
           advertiser: null,
         },
       },
-      // advertisers: [{ name: "Google" }, { name: "Facebook" }],
-      // tags: [
-      //   "sport",
-      //   "weather",
-      //   "media",
-      //   "technology",
-      //   "western",
-      //   "movie",
-      //   "etc",
-      // ],
     };
   },
 
@@ -143,30 +132,21 @@ export default {
   },
 
   methods: {
-    // ...mapActions({
-    //   addPaintingAction: "paintings/addPaintingAction",
-    //   geocodeForward: "geocoder/geocodeForward",
-    //   updatePaintingAction: "paintings/updatePaintingAction",
-    // }),
+    ...mapActions({
+      submitRequest: "requests/submitRequestAction",
+    }),
 
     // ...mapMutations({
     //   setContext: "artists/setContext",
     // }),
 
     async add() {
-      // await this.addPaintingAction(this.painting);
       // this.reset();
       // this.$refs.form.resetValidation();
-      console.log(this.request);
+      // console.log(this.request);
+      await this.submitRequest(this.request);
+      this.close();
     },
-
-    // async update() {
-    //   this.close();
-    //   this.$store.dispatch(
-    //     "snackbar/showSuccess",
-    //     "Painting was successfully updated"
-    //   );
-    // },
 
     close() {
       // if (this.$refs.form) this.$refs.form.resetValidation();
@@ -176,11 +156,9 @@ export default {
 
     reset() {
       this.request = {
-        id: 0,
         minAge: 0,
         maxAge: 99,
         geographicLocation: "Serbia",
-        advertiser: null,
         budget: 20,
         advertisement: {
           title: "",

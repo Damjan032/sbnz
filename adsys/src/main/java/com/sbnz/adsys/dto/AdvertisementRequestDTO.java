@@ -20,7 +20,6 @@ public class AdvertisementRequestDTO {
     @NotNull
     private int maxAge;
 
-    @NotBlank
     private String geographicLocation;
 
     @NotNull

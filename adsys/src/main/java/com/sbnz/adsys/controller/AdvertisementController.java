@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.parser.Entity;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.LinkedList;
@@ -18,6 +19,15 @@ public class AdvertisementController {
 
     @Autowired
     private AdvertisementService advertisementService;
+
+    @GetMapping
+    public ResponseEntity<List<AdvertisementDTO>> findAll() {
+        try {
+            return ResponseEntity.ok(advertisementService.findAll());
+        } catch (Exception e) {
+            return ResponseEntity.ok(new LinkedList<>());
+        }
+    }
 
     @GetMapping("/toBeSeen/{id}")
     public ResponseEntity<List<AdvertisementDTO>> findToBeSeenByUser(@PathVariable("id") long id) {

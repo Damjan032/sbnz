@@ -14,7 +14,7 @@
         </v-icon>
       </v-btn>
     </template>
-    <v-list class="pa-4" dark>
+    <v-list class="pa-4 lighter-back" dark>
       <v-list-item class="pl-0 hoverable">
         <v-avatar class="mr-5" height="50px" width="50px">
           <v-icon dark>

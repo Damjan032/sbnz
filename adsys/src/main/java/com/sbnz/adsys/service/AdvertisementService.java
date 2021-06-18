@@ -34,9 +34,6 @@ public class AdvertisementService {
     private KieService kieService;
 
     @Autowired
-    private ApplicationContext context;
-
-    @Autowired
     private AdvertisementRepository advertisementRepository;
 
     @Autowired
@@ -51,8 +48,14 @@ public class AdvertisementService {
     @Autowired
     private TagService tagService;
 
-    private static final String RECOMMENDATION_SESSION = "advertisement";
+    private static final int IGNORE_DELAY = 65000;
 
+    public List<AdvertisementDTO> findAll() {
+        return advertisementRepository.findAll()
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
 
     public Advertisement save(Advertisement advertisement) {
         return advertisementRepository.save(advertisement);
@@ -76,9 +79,9 @@ public class AdvertisementService {
 
         KieSession session = kieService.getEventSession();
         session.insert(viewEvent);
-//        session.fireAllRules();
+        session.fireAllRules();
 
-        new Thread(() -> fireRulesAfterDelay(session, 2000)).start();
+        new Thread(() -> fireRulesAfterDelay(session, IGNORE_DELAY)).start();
     }
 
     public void advertisementHasBeenClicked(AdvertisementEventDTO eventDTO) throws BadRequestException {
@@ -103,13 +106,11 @@ public class AdvertisementService {
                     @Override
                     public void run() {
                         session.fireAllRules();
-                        System.out.println("Executed rules after delay " + delay);
                     }
                 },
                 delay
         );
     }
-
 
     public AdvertisementDTO toDTO(Advertisement advertisement) {
         List<String> tags = advertisement.getTags().stream()

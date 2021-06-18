@@ -1,13 +1,13 @@
 <template>
   <v-menu offset-y >
     <template v-slot:activator="{ on, attrs }">
-      <v-btn class="menu-btn mx-6" fab dark small v-bind="attrs" v-on="on">
+      <v-btn class="menu-btn mx-3" fab dark small v-bind="attrs" v-on="on">
         <v-icon dark>
           mdi-plus
         </v-icon>
       </v-btn>
     </template>
-    <v-list class="pa-4" dark>
+    <v-list class="pa-4 lighter-back" dark>
       <p class="px-3 py-2 title">Create</p>
 
       <div v-for="item in items" :key="item.title">

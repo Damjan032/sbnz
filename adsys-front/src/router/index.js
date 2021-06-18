@@ -7,6 +7,7 @@ import Home from "../views/Home";
 import Admin from "../views/Admin";
 import Main from "../views/Main";
 import Pages from "../views/Pages";
+import Advertisements from "../views/Advertisements";
 
 Vue.use(VueRouter);
 
@@ -16,6 +17,7 @@ const routes = [
     component: Main,
     children: [
       { path: "/", component: Home },
+      { path: "/advertisements", component: Advertisements },
       { path: "/admin", component: Admin },
       { path: "/pages", component: Pages },
     ],

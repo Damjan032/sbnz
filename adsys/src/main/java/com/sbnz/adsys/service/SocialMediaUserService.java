@@ -87,7 +87,8 @@ public class SocialMediaUserService {
 
     @Transactional
     public void adSeenByUser(Advertisement ad, SocialMediaUser user) throws BadRequestException {
-        logger.info("Ad by {} added to user's {} SEEN ads", ad.getAdvertiser().getName(), user.fullName());
+        logger.info("Ad {} by {} added to user's {} SEEN ads", ad.getContent(),
+                ad.getAdvertiser().getName(), user.fullName());
         Optional<SocialMediaUser> socialMediaUser = this.socialMediaUserRepository.findById(user.getId());
         Optional<Advertisement> advertisement = this.advertisementRepository.findById(ad.getId());
         if(!socialMediaUser.isPresent() || !advertisement.isPresent()) throw new BadRequestException("Wrong user id");
@@ -108,7 +109,8 @@ public class SocialMediaUserService {
 
     @Transactional
     public void adIgnoredByUser(Advertisement ad, SocialMediaUser user) throws BadRequestException {
-        logger.info("Ad by {} added to user's {} IGNORED ads", ad.getAdvertiser().getName(), user.fullName());
+        logger.info("Ad {} by {} added to user's {} IGNORED ads", ad.getContent(),
+                ad.getAdvertiser().getName(), user.fullName());
         Optional<SocialMediaUser> socialMediaUser = this.socialMediaUserRepository.findById(user.getId());
         Optional<Advertisement> advertisement = this.advertisementRepository.findById(ad.getId());
         if(!socialMediaUser.isPresent() || !advertisement.isPresent()) throw new BadRequestException("Wrong user id");
@@ -128,7 +130,8 @@ public class SocialMediaUserService {
     }
 
     public void adClickedByUser(Advertisement ad, SocialMediaUser user) throws BadRequestException {
-        logger.info("Ad by {} added to user's {} CLICKED ads", ad.getAdvertiser().getName(), user.fullName());
+        logger.info("Ad {} by {} added to user's {} CLICKED ads", ad.getContent(),
+                ad.getAdvertiser().getName(), user.fullName());
         Optional<SocialMediaUser> socialMediaUser = this.socialMediaUserRepository.findById(user.getId());
         Optional<Advertisement> advertisement = this.advertisementRepository.findById(ad.getId());
         if(!socialMediaUser.isPresent() || !advertisement.isPresent()) throw new BadRequestException("Wrong user id");

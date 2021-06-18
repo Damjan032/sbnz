@@ -45,7 +45,7 @@
         </template>
 
         <template v-else>
-          <v-card class="status-card">
+          <v-card class="status-card lighter-back" dark>
             <v-row class="py-4 px-12" justify="center">
               <v-col class="mx-12">
                 <img
@@ -60,7 +60,7 @@
                   This may be because of a technical error or the lack of new
                   ads on our site. Please try reloading this page later.
                 </p>
-                <v-btn class="blue mt-3">Reload Page</v-btn>
+                <v-btn @click="reload" class="blue mt-3">Reload Page</v-btn>
               </v-col>
             </v-row>
           </v-card>
@@ -114,7 +114,7 @@ export default {
     ...mapActions({
       getAdvertisersAction: "advertisers/getAdvertisersAction",
       getTagsAction: "tags/getTagsAction",
-      getAdsAction: "advertisements/getAdvertisementsAction",
+      getAdsAction: "advertisements/getAdvertisementsToBeSeenAction",
       adSeenAction: "advertisements/advertisementSeenAction",
       adClickedAcion: "advertisements/advertisementClickedAction",
     }),
@@ -129,11 +129,15 @@ export default {
     onAdClick(id) {
       this.adClickedAcion({ userId: this.user.id, advertisementId: id });
     },
+
+    reload() {
+      this.$router.go();
+    }
   },
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .main-container {
   background-color: #18191a;
   margin-top: 40px;

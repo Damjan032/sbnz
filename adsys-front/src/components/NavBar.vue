@@ -1,8 +1,8 @@
 <template>
-  <v-app-bar class="navigation py-0" flat dark fixed>
+  <v-app-bar class="navigation py-0 lighter-back" flat dark fixed>
     <v-row class="px-2 py-0" align="center">
       <v-col cols="4" class="px-0">
-        <div class="fb-img">
+        <div class="fb-img mx-3">
           <svg
             viewBox="0 0 36 36"
             class="a8c37x1j ms05siws hwsy1cff b7h9ocf4"
@@ -53,20 +53,20 @@
             <v-icon :color="currentPath('/pages')" large>mdi-flag</v-icon>
           </div>
 
-          <div class="toolbar-btn hoverable">
+          <div v-if="isAdmin" class="toolbar-btn hoverable">
             <v-icon :color="currentPath('/admin')" large>mdi-map-plus</v-icon>
           </div>
         </v-row>
       </v-col>
 
       <v-col cols="4" align="end">
-        <span class="py-2 pr-4 pl-1 hoverable profile-hov">
+        <span class="mx-2 py-2 pr-4 pl-1 hoverable profile-hov">
           <v-avatar class="mr-2" dark height="30px" width="30px">
             <img :src="`https://randomuser.me/api/portraits/men/${user.id}.jpg`" />
           </v-avatar>
           <span class="body 2">{{ user.firstName }}</span>
         </span>
-        <create-menu />
+        <create-menu v-if="isAdmin" />
         <dropdown-menu />
       </v-col>
     </v-row>
@@ -89,6 +89,7 @@ export default {
   computed: {
     ...mapGetters({
       user: "auth/getUser",
+      isAdmin: 'auth/isAdmin'
     }),
   },
 
