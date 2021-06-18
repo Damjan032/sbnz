@@ -4,7 +4,7 @@
     <!-- <right-sidebar class="hidden-lg-and-down" /> -->
     <nav-bar />
     <v-main class="content">
-      <v-container fluid class="pa-0">
+      <v-container fluid class="outer-cont pa-0">
         <router-view />
       </v-container>
     </v-main>
@@ -36,4 +36,10 @@ export default {
   cursor: pointer;
   border-radius: 7px;
 }
+
+.outer-cont {
+  height: 100%;
+}
+
+html,body { height:100%; }
 </style>

@@ -38,11 +38,6 @@ public class AdvertisementEventsCep {
         ksconf.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
         kieSession = kc.newKieSession("advertisementEventsCep-session", ksconf);
         kieSession.setGlobal("socialMediaUserService", new SocialMediaUserService());
-        /*KieServices ks = KieServices.Factory.get();
-        KieContainer kc = ks.newKieClasspathContainer();
-        kieSession = kc.newKieSession("advertisementEventsCep-session");
-        kieSession.getSessionConfiguration().setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
-        kieSession.setGlobal("socialMediaUserService", new SocialMediaUserService());*/
     }
 
     @Test

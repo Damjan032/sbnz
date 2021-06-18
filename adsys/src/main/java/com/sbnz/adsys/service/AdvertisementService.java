@@ -1,7 +1,9 @@
 package com.sbnz.adsys.service;
 
 import com.sbnz.adsys.dto.AdvertisementDTO;
+import com.sbnz.adsys.dto.AdvertisementEventDTO;
 import com.sbnz.adsys.dto.SocialMediaUserDTO;
+import com.sbnz.adsys.event.AdvertisementClickEvent;
 import com.sbnz.adsys.event.AdvertisementViewEvent;
 import com.sbnz.adsys.exception.BadRequestException;
 import com.sbnz.adsys.model.Advertisement;
@@ -10,6 +12,8 @@ import com.sbnz.adsys.model.Tag;
 import com.sbnz.adsys.repository.AdvertisementRepository;
 import javassist.tools.web.BadHttpRequest;
 import org.kie.api.runtime.KieSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,10 +26,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class AdvertisementService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AdvertisementService.class);
     
     @Autowired
     private KieService kieService;
-    private static final String RECOMMENDATION_SESSION = "advertisement";
 
     @Autowired
     private AdvertisementRepository advertisementRepository;
@@ -42,14 +47,49 @@ public class AdvertisementService {
     @Autowired
     private TagService tagService;
 
+    private static final String RECOMMENDATION_SESSION = "advertisement";
+
+
     public Advertisement save(Advertisement advertisement) {
         return advertisementRepository.save(advertisement);
     }
 
-    public List<AdvertisementDTO> findToBeSeenByPatientId(long id){
+    public List<AdvertisementDTO> findToBeSeenByUserId(long id){
         return userService.findById(id)
                 .getAdvertisementsToBeShown();
     }
+
+    public void advertisementHasBeenSeen(AdvertisementEventDTO eventDTO) throws BadRequestException {
+        Optional<Advertisement> advertisement = this.advertisementRepository.findById(eventDTO.getAdvertisementId());
+        Optional<SocialMediaUser> socialMediaUser = this.socialMediaUserService.findByIdEntity(eventDTO.getUserId());
+
+        if(!advertisement.isPresent() || !socialMediaUser.isPresent())
+            throw new BadRequestException("Wrong advertisement id");
+
+        AdvertisementViewEvent advertisementViewEvent = new AdvertisementViewEvent(socialMediaUser.get(), advertisement.get());
+        logger.info("New View event by user {} for ad by {}", socialMediaUser.get().fullName(),
+                advertisement.get().getAdvertiser().getName());
+
+        // TODO: kieSession treba da bude injektovana ovde, ne da se kreira svaki put
+//        KieSession kieSession = kieService.getSession(RECOMMENDATION_SESSION);
+//        kieSession.setGlobal("socialMediaUserService", this.socialMediaUserService);
+//        kieSession.insert(advertisementViewEvent);
+//        kieSession.fireAllRules();
+
+    }
+
+    public void advertisementHasBeenClicked(AdvertisementEventDTO eventDTO) throws BadRequestException {
+        Optional<Advertisement> advertisement = this.advertisementRepository.findById(eventDTO.getAdvertisementId());
+        Optional<SocialMediaUser> socialMediaUser = this.socialMediaUserService.findByIdEntity(eventDTO.getUserId());
+
+        if(!advertisement.isPresent() || !socialMediaUser.isPresent())
+            throw new BadRequestException("Wrong advertisement id");
+
+        AdvertisementClickEvent clickEvent = new AdvertisementClickEvent(socialMediaUser.get(), advertisement.get());
+        logger.info("New Click event by user {} for ad by {}", socialMediaUser.get().fullName(),
+                advertisement.get().getAdvertiser().getName());
+    }
+
 
     public AdvertisementDTO toDTO(Advertisement advertisement) {
         List<String> tags = advertisement.getTags().stream()
@@ -64,21 +104,6 @@ public class AdvertisementService {
                 .tags(tags)
                 .advertiser(advertiserService.toDTO(advertisement.getAdvertiser()))
                 .build();
-    }
-    
-    public boolean advertisementHasBeeSeen(long id, SocialMediaUserDTO socialMediaUserDTO){
-        Optional<Advertisement> advertisement = this.advertisementRepository.findById(id);
-        SocialMediaUser socialMediaUser = this.socialMediaUserService.toEntity(socialMediaUserDTO);
-        if(!advertisement.isPresent())
-            throw new BadRequestException("Wrong advertisement id");
-        AdvertisementViewEvent advertisementViewEvent = new AdvertisementViewEvent(socialMediaUser, advertisement.get());
-        KieSession kieSession = kieService.getSession(RECOMMENDATION_SESSION);
-        kieSession.setGlobal("socialMediaUserService", this.socialMediaUserService);
-        kieSession.insert(advertisementViewEvent);
-        kieSession.fireAllRules();
-        
-        //TODO tred koji nekan N minuta provera da li se advertisement nalazi u listi kliknutih, ako ne onda ce nestati.
-        return true;
     }
 
     public Advertisement toEntity(AdvertisementDTO dto) {

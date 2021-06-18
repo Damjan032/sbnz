@@ -1,0 +1,23 @@
+package rules.test;
+
+import com.sbnz.adsys.model.MyEvent;
+import com.sbnz.adsys.model.SecondEvent;
+
+rule "my first time operators example"
+    when
+        $e1: MyEvent()
+        $e2: SecondEvent(this after[0s, 5s] $e1)
+    then
+        delete($e1);
+        delete($e2);
+        System.out.println("We have two events within 5 seconds");
+end
+
+
+rule "my second time operators example"
+    when
+        $e1: MyEvent()
+        not(SecondEvent(this after[0s, 5s] $e1))
+    then
+        System.out.println("We DONT HAVE two events within 5 seconds");
+end

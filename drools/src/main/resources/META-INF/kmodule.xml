@@ -4,6 +4,9 @@
 	<kbase name="rules" packages="rules">
 		<ksession name="ksession-rules"/>
 	</kbase>
+	<kbase name="test" eventProcessingMode="stream" packages="test">
+		<ksession name="test-rules"/>
+	</kbase>
 	<kbase name="login" eventProcessingMode="stream" packages="rules.login">
 		<ksession name="login-session"/>
 	</kbase>

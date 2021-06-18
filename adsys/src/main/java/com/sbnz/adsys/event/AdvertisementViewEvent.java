@@ -18,5 +18,4 @@ import java.util.Date;
 public class AdvertisementViewEvent {
     private SocialMediaUser socialMediaUser;
     private Advertisement advertisement;
-
 }

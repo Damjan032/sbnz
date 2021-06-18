@@ -1,5 +1,6 @@
 import axios from "axios";
 
+
 const state = {
   advertisements: [],
 };
@@ -20,15 +21,16 @@ const actions = {
     }
   },
 
-  async advertisementSeenAction(payload) {
+  async advertisementSeenAction({}, payload) {
+    console.log(payload)
     try {
-      await axios.post("/api/posts/seen/", payload);
+      await axios.post("/api/posts/seen", payload);
     } catch (e) {
       console.log(e);
     }
   },
 
-  async advertisementClickedAction(payload) {
+  async advertisementClickedAction({}, payload) {
     try {
       await axios.post("/api/posts/clicked/", payload);
     } catch (e) {

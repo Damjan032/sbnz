@@ -33,14 +33,39 @@
           </v-row>
         </v-card>
 
-        <feed-item
-          v-for="item in advertisements"
-          @clicked="onAdClick"
-          @viewed="onAdView"
-          :key="item.id"
-          :ad="item"
-          class="mb-12"
-        />
+        <template v-if="advertisements.length > 0">
+          <feed-item
+            v-for="item in advertisements"
+            @clicked="onAdClick"
+            @viewed="onAdView"
+            :key="item.id"
+            :ad="item"
+            class="mb-12"
+          />
+        </template>
+
+        <template v-else>
+          <v-card class="status-card">
+            <v-row class="py-4 px-12" justify="center">
+              <v-col class="mx-12">
+                <img
+                  class="hu5pjgll"
+                  height="112"
+                  src="https://www.facebook.com/images/comet/empty_states_icons/general/general_dark_mode.svg"
+                  width="112"
+                  alt=""
+                />
+                <p class="headline pt-2">No advertisements to show</p>
+                <p class="subtitle-1">
+                  This may be because of a technical error or the lack of new
+                  ads on our site. Please try reloading this page later.
+                </p>
+                <v-btn class="blue mt-3">Reload Page</v-btn>
+              </v-col>
+            </v-row>
+          </v-card>
+        </template>
+        
       </v-col>
     </v-row>
   </div>
@@ -98,6 +123,8 @@ export default {
       if (id in this.seenAds) return;
       this.seenAds[id] = true;
 
+      // const x = { userId: this.user.id, advertisementId: id };
+      // console.log(x);
       this.adSeenAction({ userId: this.user.id, advertisementId: id });
     },
 

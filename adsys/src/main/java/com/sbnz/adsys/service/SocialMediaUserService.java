@@ -11,6 +11,8 @@ import com.sbnz.adsys.model.SocialMediaUser;
 import com.sbnz.adsys.repository.SocialMediaUserRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +26,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SocialMediaUserService {
+
+    private static final Logger logger = LoggerFactory.getLogger(SocialMediaUserService.class);
 
     @Autowired
     private SocialMediaUserRepository socialMediaUserRepository;
@@ -49,6 +53,10 @@ public class SocialMediaUserService {
         return toDTO(socialMediaUserRepository.findById(id).get());
     }
 
+    public Optional<SocialMediaUser> findByIdEntity(long id)  {
+        return socialMediaUserRepository.findById(id);
+    }
+
     public List<SocialMediaUser> findAllEntity() {
         return new ArrayList<>(socialMediaUserRepository.findAll());
     }
@@ -61,10 +69,6 @@ public class SocialMediaUserService {
             socialMediaUser.getAdvertisementsToBeShown().remove(adToIgnore.get());
             socialMediaUser.getIgnoredAdvertisements().add(adToIgnore.get());
         }
-    }
-
-    public void addAdToBeSeen(Advertisement ad, SocialMediaUser user) {
-        System.out.println("Advertisement " + ad + " added to user's " + user + " to be viewed");
     }
 
     public void adSeenByUser(Advertisement ad, SocialMediaUser user){
@@ -80,7 +84,8 @@ public class SocialMediaUserService {
 
     @Transactional
     public void adIgnoredByUser(Advertisement ad, SocialMediaUser user){
-        System.out.println("IGNORED User " + user + " has ignored the ad: " + ad);
+        logger.info("Ad by {} added to user's {} IGNORED ads", ad.getAdvertiser().getName(), user.fullName());
+
         if(!user.getIgnoredAdvertisements().contains(ad))
             user.getIgnoredAdvertisements().add(ad);
         if (user.getAdvertisementsToBeShown().contains(ad)) {
@@ -92,7 +97,7 @@ public class SocialMediaUserService {
     }
 
     public void adClickedByUser(Advertisement ad, SocialMediaUser user){
-        System.out.println("CLICKED User " + user + " has clicked the ad: " + ad);
+        logger.info("Ad by {} added to user's {} CLICKED ads", ad.getAdvertiser().getName(), user.fullName());
 
         if (user.getSeenAdvertisements().contains(ad)) {
             user.getSeenAdvertisements().remove(ad);

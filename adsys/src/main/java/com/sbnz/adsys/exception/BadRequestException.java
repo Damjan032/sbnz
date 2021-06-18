@@ -5,7 +5,7 @@ import lombok.Data;
 import org.springframework.http.HttpStatus;
 
 @Data
-public class BadRequestException extends RuntimeException {
+public class BadRequestException extends Exception {
     private ErrorMessages errorMessages;
     
     public BadRequestException(String msg) {
