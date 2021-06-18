@@ -39,7 +39,7 @@ rule "Ad has not been clicked for more than 10 mins"
 
 end
 
-rule "Ad was clicked for more than 10 times in the last 10min"
+rule "Ad was clicked for more than 20 times in the last 2s"
     when
         $aie: AdvertisementClickEvent($ad: advertisement, $user: socialMediaUser)
         Number(intValue >= 20) from accumulate(
