@@ -45,24 +45,38 @@
 
       <v-col cols="4" align="center">
         <v-row justify="center">
-          <div class="toolbar-btn hoverable">
-            <v-icon :color="currentPath('/')" large>mdi-home</v-icon>
-          </div>
+          <router-link to="/">
+            <div class="toolbar-btn hoverable">
+              <v-icon :color="path == '/' ? 'blue' : 'white'" large
+                >mdi-home</v-icon
+              >
+            </div>
+          </router-link>
 
           <div class="toolbar-btn hoverable">
-            <v-icon :color="currentPath('/pages')" large>mdi-flag</v-icon>
+            <v-icon :color="path == '/pages' ? 'blue' : 'white'" large
+              >mdi-flag</v-icon
+            >
           </div>
 
-          <div v-if="isAdmin" class="toolbar-btn hoverable">
-            <v-icon :color="currentPath('/admin')" large>mdi-map-plus</v-icon>
-          </div>
+          <router-link to="/advertisements">
+            <div v-if="isAdmin" class="toolbar-btn hoverable">
+              <v-icon
+                :color="path == '/advertisements' ? 'blue' : 'white'"
+                large
+                >mdi-map-plus</v-icon
+              >
+            </div>
+          </router-link>
         </v-row>
       </v-col>
 
       <v-col cols="4" align="end">
         <span class="mx-2 py-2 pr-4 pl-1 hoverable profile-hov">
           <v-avatar class="mr-2" dark height="30px" width="30px">
-            <img :src="`https://randomuser.me/api/portraits/men/${user.id}.jpg`" />
+            <img
+              :src="`https://randomuser.me/api/portraits/men/${user.id}.jpg`"
+            />
           </v-avatar>
           <span class="body 2">{{ user.firstName }}</span>
         </span>
@@ -84,21 +98,24 @@ export default {
   components: { CreateMenu, DropdownMenu },
   data: () => ({
     menuActive: false,
+    path: "/",
   }),
 
   computed: {
     ...mapGetters({
       user: "auth/getUser",
-      isAdmin: 'auth/isAdmin'
+      isAdmin: "auth/isAdmin",
     }),
   },
 
-  methods: {
-    currentPath(current) {
-      if (current === window.location.pathname) return "blue";
-      return "white";
+  watch: {
+    $route(to, from) {
+      console.log(to.path);
+      this.path = to.path;
     },
   },
+
+  methods: {},
 };
 </script>
 
@@ -125,5 +142,9 @@ export default {
 
 .profile-hov {
   border-radius: 20px !important;
+}
+
+a {
+  text-decoration: none;
 }
 </style>

@@ -19,7 +19,7 @@ public class MockDataGenerator {
     private final Random random;
 
     private static final int ADVERTISER_COUNT = 3;
-    private static final int ADVERTISEMENT_COUNT = 40;
+    private static final int ADVERTISEMENT_COUNT = 43;
     private static final int PAGES_COUNT = 10;
     private static final int USER_COUNT = 100;
 
@@ -30,6 +30,7 @@ public class MockDataGenerator {
     private static final int MAX_PAGES_LIKED = 8;
 
     private final Map<String, Authority> authorityMap = new HashMap<>();
+    List<String> cities = Arrays.asList("Beograd", "Novi Sad", "Nis");
 
     private final List<Tag> tags = new LinkedList<>();
     private final List<Advertiser> advertisers = new LinkedList<>();
@@ -196,28 +197,6 @@ public class MockDataGenerator {
         }
     }
 
-    /*    public void generateManyToManySocMediaUsersAndAd(){
-        SocialMediaUserRepository repository = context.getBean(SocialMediaUserRepository.class);
-        for(SocialMediaUser socialMediaUser: socialMediaUsers){
-            List<Advertisement> allAdsShuffled = getRandomElements(advertisements, advertisements.size());
-            List<Advertisement> ignored = new LinkedList<>();
-            List<Advertisement> clicked = new LinkedList<>();
-    
-            // 33% chance to be ignored clicked or not shown at all
-            for (int i = 0; i < allAdsShuffled.size(); i++) {
-                int randomNum = random.nextInt(3);
-                if (randomNum == 0)
-                    ignored.add(allAdsShuffled.get(i));
-                else if (randomNum == 1)
-                    clicked.add(allAdsShuffled.get(i));
-            }
-            socialMediaUser.setAdvertisementsToBeShown(new LinkedList<>());
-
-            socialMediaUser.setClickedAdvertisements(clicked);
-            socialMediaUser.setIgnoredAdvertisements(ignored);
-            repository.saveAll(socialMediaUsers);
-        }
-    }*/
     private void generateSocialMediaUsers() {
         SocialMediaUserRepository repository = context.getBean(SocialMediaUserRepository.class);
         SocialMediaPageRepository pageRepository = context.getBean(SocialMediaPageRepository.class);
@@ -243,7 +222,7 @@ public class MockDataGenerator {
                     .user(user)
                     .age(18 + random.nextInt(70 - 18))
                     .country("Serbia")
-                    .city("Stara Pazova")
+                    .city(getRandomElement(cities))
                     .likedSocialMediaPages(pagesToLike)
                     .advertisementsToBeShown(new LinkedList<>())
                     .seenAdvertisements(new LinkedList<>())
@@ -271,14 +250,6 @@ public class MockDataGenerator {
                 cl.setSocialMediaUsersClicked(newList);
                 advertisementRepository.save(cl);
             }
-            
-          
-            
-           /* List<SocialMediaUser> socList = new LinkedList<SocialMediaUser>();
-            socList.add(savedUser);
-            Advertisement advertisement = advertisementRepository.findAll().get(0);
-            advertisement.setSocialMediaUsersIgnored(socList);
-            advertisementRepository.save(advertisement);*/
 
             pagesToLike.forEach(page -> {
                 page.getUsersWhoLikeThePage().add(savedUser);

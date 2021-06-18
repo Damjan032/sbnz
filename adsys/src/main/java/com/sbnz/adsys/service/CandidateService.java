@@ -4,10 +4,19 @@ import com.sbnz.adsys.dto.BasicUserInfoDTO;
 import com.sbnz.adsys.dto.CandidateDTO;
 import com.sbnz.adsys.model.Candidate;
 import com.sbnz.adsys.model.SocialMediaUser;
+import com.sbnz.adsys.repository.CandidateRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CandidateService {
+
+    @Autowired
+    private CandidateRepository candidateRepository;
+
+    public Candidate save(Candidate candidate) {
+        return candidateRepository.save(candidate);
+    }
 
     public CandidateDTO toDTO(Candidate candidate) {
         return CandidateDTO.builder()

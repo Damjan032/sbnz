@@ -34,21 +34,7 @@ public class Advertisement {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="advertiser_id", nullable=false)
     private Advertiser advertiser;
-    
 
-    /*
-        @ManyToMany(mappedBy = "advertisementsToBeShown", fetch = FetchType.LAZY)
-    private List<SocialMediaUser> socialMediaUsersToBeShow;
-    
-    @ManyToMany(mappedBy = "seenAdvertisements", fetch = FetchType.LAZY)
-    private List<SocialMediaUser> socialMediaUsersSeen;
-    
-    @ManyToMany(mappedBy = "ignoredAdvertisements", fetch = FetchType.LAZY)
-    private List<SocialMediaUser> socialMediaUsersIgnored;
-    
-    @ManyToMany(mappedBy = "clickedAdvertisements", fetch = FetchType.LAZY)
-    private List<SocialMediaUser> socialMediaUsersClicked;
-     */
     @ManyToMany(fetch = FetchType.LAZY)
     private List<SocialMediaUser> socialMediaUsersToBeShow;
     

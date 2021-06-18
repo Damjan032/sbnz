@@ -1,6 +1,7 @@
 package com.sbnz.adsys.service;
 
 import com.sbnz.adsys.dto.AdvertisementRequestDTO;
+import com.sbnz.adsys.dto.AdvertisementRequestResponseDTO;
 import com.sbnz.adsys.dto.CandidateDTO;
 import com.sbnz.adsys.model.*;
 import com.sbnz.adsys.repository.SocialMediaUserRepository;
@@ -12,6 +13,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -23,7 +25,7 @@ public class AdvertisementRequestService {
 
     @Autowired
     private AdvertisementService advertisementService;
-    
+
     @Autowired
     private SocialMediaUserRepository socialMediaUserRepository;
 
@@ -32,6 +34,9 @@ public class AdvertisementRequestService {
 
     @Autowired
     private CandidateService candidateService;
+
+    @Autowired
+    private AdvertisementRequestResponseService responseService;
 
     @Autowired
     private SocialMediaUserService userService;
@@ -45,8 +50,9 @@ public class AdvertisementRequestService {
     private static final double HERD_COEFFICIENT = 1;
 
 
-    public List<CandidateDTO> submit(AdvertisementRequestDTO requestDTO) {
+    public AdvertisementRequestResponseDTO submit(AdvertisementRequestDTO requestDTO) {
         AdvertisementRequest request = toEntity(requestDTO);
+        request.setDate(LocalDateTime.now());
         Advertisement advertisement = request.getAdvertisement();
 
         KieSession kieSession = kieService.getSession(RECOMMENDATION_SESSION);
@@ -71,21 +77,27 @@ public class AdvertisementRequestService {
                 .sorted(Comparator.comparingDouble(c -> -c.getFinalScore()))
                 .limit((int) request.getBudget())
                 .collect(Collectors.toList());
-        if(advertisement.getSocialMediaUsersToBeShow()==null)
+        if (advertisement.getSocialMediaUsersToBeShow() == null)
             advertisement.setSocialMediaUsersToBeShow(new LinkedList<>());
-        
+
         toBeShownTo.forEach(candidate -> {
             advertisement.getSocialMediaUsersToBeShow().add(this.socialMediaUserRepository.findById(candidate.getUser().getId()).get());
             SocialMediaUser user = candidate.getUser();
             user.getAdvertisementsToBeShown().add(request.getAdvertisement());
             userService.save(user);
+            candidateService.save(candidate);
         });
-        
-        advertisementService.save(request.getAdvertisement());
 
-        return toBeShownTo.stream()
-                .map(candidate -> candidateService.toDTO(candidate))
-                .collect(Collectors.toList());
+        Advertisement newAd = advertisementService.save(request.getAdvertisement());
+
+        // create response
+        AdvertisementRequestResponse response = AdvertisementRequestResponse.builder()
+                .candidates(toBeShownTo)
+                .advertisement(newAd)
+                .date(request.getDate())
+                .build();
+
+        return responseService.save(response);
     }
 
     private void setGlobalVariables(KieSession kieSession) {
@@ -103,6 +115,7 @@ public class AdvertisementRequestService {
                 .minAge(request.getMinAge())
                 .maxAge(request.getMaxAge())
                 .geographicLocation(request.getGeographicLocation())
+                .date(request.getDate())
                 .budget(request.getBudget())
                 .advertisement(advertisementService.toDTO(request.getAdvertisement()))
                 .build();
@@ -116,7 +129,10 @@ public class AdvertisementRequestService {
                 .maxAge(dto.getMaxAge())
                 .geographicLocation(dto.getGeographicLocation())
                 .budget(dto.getBudget())
+                .date(dto.getDate())
                 .advertisement(advertisementService.toEntity(dto.getAdvertisement()))
                 .build();
     }
+
+
 }

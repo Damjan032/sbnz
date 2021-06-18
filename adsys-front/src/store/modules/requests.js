@@ -1,16 +1,31 @@
 import axios from "axios";
 
+function round(number) {
+  return Math.round(number * 1000) / 1000;
+}
+
+function addFirstName(candidate) {
+  candidate.name = candidate.user.firstName + " " + candidate.user.lastName;
+  candidate.finalScore = round(candidate.finalScore);
+  candidate.herdCoefficient = round(candidate.herdCoefficient);
+}
+
 const state = {
   requests: [],
 };
 
 const mutations = {
   setRequests(state, requests) {
+    requests.forEach((req) => {
+      req.candidates.forEach((candidate) => addFirstName(candidate));
+    });
+    console.log(requests);
     state.requests = requests;
   },
 
   addRequest(state, request) {
-    state.request.push(request);
+    request.candidates.forEach((candidate) => addFirstName(candidate));
+    state.requests.unshift(request);
   },
 };
 

@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,4 +27,6 @@ public class AdvertisementRequest {
 
     @OneToOne
     private Advertisement advertisement;
+
+    private LocalDateTime date;
 }

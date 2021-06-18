@@ -3,6 +3,8 @@ package com.sbnz.adsys.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,6 +20,8 @@ public class AdvertisementRequestResponse {
     @OneToOne
     private Advertisement advertisement;
 
-    @OneToOne
-    private Candidate candidate;
+    @OneToMany
+    private List<Candidate> candidates;
+
+    private LocalDateTime date;
 }

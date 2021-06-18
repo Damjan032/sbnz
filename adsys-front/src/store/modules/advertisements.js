@@ -14,7 +14,6 @@ const actions = {
   async getAllAdvertisementsAction({ commit }) {
     try {
       const { data } = await axios.get("/api/posts");
-      console.log(data);
       commit("setAdvertisements", data);
     } catch (e) {
       console.log(e);

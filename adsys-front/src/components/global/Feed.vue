@@ -65,7 +65,6 @@
             </v-row>
           </v-card>
         </template>
-        
       </v-col>
     </v-row>
   </div>
@@ -132,7 +131,7 @@ export default {
 
     reload() {
       this.$router.go();
-    }
+    },
   },
 };
 </script>
@@ -144,13 +143,6 @@ export default {
   padding: 50px 100px;
   height: 100%;
   min-width: 800px;
-}
-
-.status-update {
-  input {
-    background-color: #181a1b !important;
-    color: white !important;
-  }
 }
 
 .status-card {

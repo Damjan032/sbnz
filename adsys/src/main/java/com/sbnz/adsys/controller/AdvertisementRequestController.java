@@ -1,8 +1,10 @@
 package com.sbnz.adsys.controller;
 
 import com.sbnz.adsys.dto.AdvertisementRequestDTO;
+import com.sbnz.adsys.dto.AdvertisementRequestResponseDTO;
 import com.sbnz.adsys.dto.CandidateDTO;
 import com.sbnz.adsys.dto.SocialMediaPageDTO;
+import com.sbnz.adsys.service.AdvertisementRequestResponseService;
 import com.sbnz.adsys.service.AdvertisementRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.validation.beanvalidation.MethodValidationExcludeFilter;
@@ -22,8 +24,16 @@ public class AdvertisementRequestController {
     @Autowired
     AdvertisementRequestService advertisementRequestService;
 
+    @Autowired
+    AdvertisementRequestResponseService responseService;
+
+    @GetMapping
+    public ResponseEntity<List<AdvertisementRequestResponseDTO>> findAll() {
+        return ResponseEntity.ok(responseService.findAll());
+    }
+
     @PostMapping
-    public ResponseEntity<List<CandidateDTO>> submit(@Valid @RequestBody AdvertisementRequestDTO requestDTO) {
+    public ResponseEntity<AdvertisementRequestResponseDTO> submit(@Valid @RequestBody AdvertisementRequestDTO requestDTO) {
         return ResponseEntity.ok(advertisementRequestService.submit(requestDTO));
     }
 }
