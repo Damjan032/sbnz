@@ -10,7 +10,7 @@ declare SuspiciousUserEvent
     reason: String
 end
 
-rule "More than 3 logging in unsuccessfully in 1 minute from one user"
+rule "More than 3 logging in unsuccessfully in 30 seconds from one user"
     when
         $loginEvent: LoginEvent($user: user, user != null);
         Number(intValue >= 3 ) from accumulate(

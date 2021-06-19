@@ -14,7 +14,7 @@ rule "Ad has been seen"
 end
 
 
-rule "Ad has been clicked within 10 minutes"
+rule "Ad has been clicked within 1 min"
     when
        $adEvent : AdvertisementViewEvent($ad: advertisement, $user: socialMediaUser)
        $ace: AdvertisementClickEvent (advertisement.getId() == $ad.getId(),
@@ -27,10 +27,10 @@ rule "Ad has been clicked within 10 minutes"
 end
 
 
-rule "Ad has not been clicked for more than 10 mins"
+rule "Ad has NOT been clicked for more than 1 min"
     when
        $adEvent : AdvertisementViewEvent($ad: advertisement, $user: socialMediaUser)
-       not ( AdvertisementClickEvent (advertisement.getId() == $ad.getId(),
+       not (AdvertisementClickEvent (advertisement.getId() == $ad.getId(),
         socialMediaUser.getUser().getId() == $user.getUser().getId(),
        this after[0s,1m] $adEvent ))
     then
@@ -50,18 +50,3 @@ rule "Ad was clicked for more than 20 times in the last 2s"
         delete($aie);
         socialMediaUserService.adIgnoredByUser($ad, $user);
 end
-
-/*rule "Ad was viewed for more than 10 times in the last 10min"
-      when
-
-          AdvertisementViewEvent($ad: advertisement, $user: socialMediaUser, !isClicked());
-
-          Number(intValue >= 10) from accumulate(
-              $cavc: AdvertisementViewEvent(advertisement.getId() == $ad.getId(), socialMediaUser.getId() == $user.getId(), !isClicked()) over window:length(10),
-              count($cavc)
-          );
-      then
-          System.out.println("NIJE KLIKNUTA U ZADNJIJAAAAAA 10 min");
-          delete($aie);
-          socialMediaUserService.adIgnoredByUser($ad, $user);
-  end*/

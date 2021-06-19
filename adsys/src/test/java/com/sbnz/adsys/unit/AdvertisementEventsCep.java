@@ -63,8 +63,6 @@ public class AdvertisementEventsCep {
         kieSession.fireAllRules();
         verify(socialMediaUserService,
                 Mockito.times(1)).adSeenByUser(ad, user);
-        //assertFalse(user.getAdvertisementsToBeShown().contains(ad));
-        //assertTrue(user.getSeenAdvertisements().contains(ad));
     }
 
     @Test
@@ -152,12 +150,7 @@ public class AdvertisementEventsCep {
             kieSession.insert(new AdvertisementClickEvent(user, ad));
             kieSession.fireAllRules();
         }
-        /*SessionPseudoClock clock = kieSession.getSessionClock();
-        clock.advanceTime(8, TimeUnit.MINUTES);
-        
-        AdvertisementIgnoredEvent aie = new AdvertisementIgnoredEvent(Date.from(Instant.now().plus(8, ChronoUnit.MINUTES)), user, ad);
-        kieSession.insert(aie);
-        kieSession.fireAllRules();*/
+
         verify(socialMediaUserService, atLeast(1)).adIgnoredByUser(ad, user);
     }
 

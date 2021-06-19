@@ -102,8 +102,6 @@ public class SocialMediaUserService {
             socialMediaUser.get().getAdvertisementsToBeShown().remove(advertisement.get());
             socialMediaUser.get().getSeenAdvertisements().add(advertisement.get());
            
-        } else {
-            // raise exception here
         }
     }
 
@@ -145,8 +143,6 @@ public class SocialMediaUserService {
             
             socialMediaUser.get().getSeenAdvertisements().remove(advertisement.get());
             socialMediaUser.get().getClickedAdvertisements().add(advertisement.get());
-        } else {
-            // raise exception here
         }
     }
 
