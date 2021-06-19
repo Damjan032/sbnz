@@ -19,7 +19,6 @@ const mutations = {
     requests.forEach((req) => {
       req.candidates.forEach((candidate) => addFirstName(candidate));
     });
-    console.log(requests);
     state.requests = requests;
   },
 

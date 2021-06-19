@@ -19,7 +19,7 @@ public class MockDataGenerator {
     private final Random random;
 
     private static final int ADVERTISER_COUNT = 3;
-    private static final int ADVERTISEMENT_COUNT = 43;
+    private static final int ADVERTISEMENT_COUNT = 46;
     private static final int PAGES_COUNT = 10;
     private static final int USER_COUNT = 100;
 

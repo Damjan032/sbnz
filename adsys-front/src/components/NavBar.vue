@@ -101,6 +101,10 @@ export default {
     path: "/",
   }),
 
+  created() {
+    this.path = this.$router.history.current.path;
+  },
+
   computed: {
     ...mapGetters({
       user: "auth/getUser",
@@ -110,7 +114,6 @@ export default {
 
   watch: {
     $route(to, from) {
-      console.log(to.path);
       this.path = to.path;
     },
   },

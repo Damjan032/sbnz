@@ -122,9 +122,12 @@ export default {
       console.log(inp);
     },
     getColor(score) {
-      if (score < 0) return "red";
+      if (score > 10000) return "green";
+      else if (score < - 10000) return "red";
+
+      if (score <= 0) return "red";
       else if (score < 5) return "orange";
-      else return "green";
+      else return "light-green";
     },
   },
 };

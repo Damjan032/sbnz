@@ -203,7 +203,7 @@ rule "Set Final Score for Automatically Qualified Candidates" salience 2
     when
         $c: Candidate(targetGroup && automaticallyQualified)
     then
-        modify ($c) {setFinalScore(Double.POSITIVE_INFINITY)}
+        modify ($c) {setFinalScore(Double.MAX_VALUE)}
 end
 
 
@@ -211,5 +211,5 @@ rule "Set Final Score for Disqualified Candidates" salience 2
     when
         $c: Candidate(targetGroup && disqualified)
     then
-        modify ($c) {setFinalScore(Double.NEGATIVE_INFINITY)}
+        modify ($c) {setFinalScore(Double.MIN_VALUE)}
 end

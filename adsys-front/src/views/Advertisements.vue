@@ -46,7 +46,6 @@ export default {
 
   async created() {
     await this.getRequests();
-    console.log(this.requests)
   },
 
   computed: {
