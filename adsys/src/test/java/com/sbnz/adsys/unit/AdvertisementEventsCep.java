@@ -90,12 +90,28 @@ public class AdvertisementEventsCep {
         kieSession.insert(new AdvertisementViewEvent(user, ad));
         kieSession.fireAllRules();
         clock.advanceTime(15, TimeUnit.MINUTES);
-       /* kieSession.insert(new AdvertisementClickEvent(user, ad));*/
         kieSession.fireAllRules();
         verify(socialMediaUserService,
                 Mockito.times(1)).adSeenByUser(ad, user);
         verify(socialMediaUserService,
                 Mockito.times(0)).adClickedByUser(ad, user);
+    }
+
+    @Test
+    public void testIgnoredAdd_AddIgnoredByUser() throws BadRequestException {
+        SocialMediaUser user = DroolsTestUtils.getBasicUser();
+        Advertisement ad = DroolsTestUtils.getBasicAdvertisement();
+        user.getAdvertisementsToBeShown().add(ad);
+
+        SessionPseudoClock clock = kieSession.getSessionClock();
+
+        kieSession.insert(new AdvertisementViewEvent(user, ad));
+        kieSession.fireAllRules();
+
+        clock.advanceTime(10, TimeUnit.MINUTES);
+        kieSession.fireAllRules();
+
+        verify(socialMediaUserService, Mockito.times(1)).adIgnoredByUser(ad, user);
     }
     
     @Test
@@ -130,8 +146,6 @@ public class AdvertisementEventsCep {
             kieSession.fireAllRules();
         }
         assertFalse(user.getSeenAdvertisements().contains(ad));
-        /*SessionPseudoClock clock = kieSession.getSessionClock();
-        clock.advanceTime(15, TimeUnit.MINUTES);*/
         for (int i = 0; i < 5; ++i) {
             kieSession.insert(new AdvertisementClickEvent( user, ad));
             kieSession.fireAllRules();
